@@ -954,7 +954,7 @@ function Portfolio() {
         <section className="hero" id="about">
           <div className="hero-inner">
             <div className="hero-copy">
-              <h1 className="hero-mark">VEDANSH</h1>
+              <h1 className="hero-mark">VED</h1>
               <p className="discipline">Full-Stack Developer / Robotics / Machine Learning</p>
               <p className="about-copy">
                 I consider myself someone who is driven by curiosity and desire. I enjoy trying new things, building new
