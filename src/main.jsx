@@ -40,6 +40,13 @@ function startBg() {
   if (bgAudio.paused) bgAudio.play().catch(() => {});
 }
 
+// Prime browser cache for all audio immediately on page load
+[bgSrc, hoverSrc, wallSrc, failSrc, glassSrc, wooshSrc, woosh2Src].forEach(src => {
+  const a = new Audio();
+  a.preload = "auto";
+  a.src = src;
+});
+
 const mousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 window.addEventListener("mousemove", (e) => { mousePos.x = e.clientX; mousePos.y = e.clientY; }, { passive: true });
 
