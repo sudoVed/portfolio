@@ -153,15 +153,17 @@ function DieScene({ onReady, dieRef, mappingMode = false }) {
       const model = viewer.model;
       const mat0 = model?.materials?.[0];
       if (mat0) {
-        mat0.pbrMetallicRoughness?.setBaseColorFactor([0.01, 0.01, 0.01, 1.0]);
+        mat0.pbrMetallicRoughness?.baseColorTexture?.setTexture(null);
+        mat0.pbrMetallicRoughness?.setBaseColorFactor([0.10, 0.05, 0.25, 1.0]);
         mat0.setEmissiveFactor?.([0, 0, 0]);
       }
       const mat1 = model?.materials?.[1];
       if (mat1) {
-        mat1.pbrMetallicRoughness?.setBaseColorFactor([0.48, 0.28, 0.02, 1.0]);
-        mat1.pbrMetallicRoughness?.setMetallicFactor?.(0.85);
-        mat1.pbrMetallicRoughness?.setRoughnessFactor?.(0.35);
-        mat1.setEmissiveFactor?.([0.06, 0.04, 0.0]);
+        mat1.pbrMetallicRoughness?.baseColorTexture?.setTexture(null);
+        mat1.pbrMetallicRoughness?.setBaseColorFactor([0.0, 0.0, 0.0, 1.0]);
+        mat1.pbrMetallicRoughness?.setMetallicFactor?.(0.0);
+        mat1.pbrMetallicRoughness?.setRoughnessFactor?.(0.6);
+        mat1.setEmissiveFactor?.([0, 0, 0]);
       }
 
       const start = performance.now();
