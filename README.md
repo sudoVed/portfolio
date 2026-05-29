@@ -1,6 +1,6 @@
 # Portfolio
 
-A personal portfolio site — full-stack development, robotics, and machine learning. Built around a narrative intro sequence and a scroll-driven 3D background, with distinct visual character in every section.
+A personal portfolio site. Built around a narrative intro sequence and a scroll-driven 3D background, with distinct visual character in every section.
 
 > *"Success and failure share one thing: they change you."*
 
