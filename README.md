@@ -2,8 +2,6 @@
 
 A personal portfolio site. Built around a narrative intro sequence and a scroll-driven 3D background, with distinct visual character in every section.
 
-> *"Success and failure share one thing: they change you."*
-
 ---
 
 ## Stack
@@ -26,7 +24,11 @@ The site opens with a full-screen intro before the main portfolio is revealed. I
 
 ### Act 1 — The Quote
 
-A split-screen layout. A silhouette figure sits on one side; on the other, a short italic quote fades in slowly and deliberately. The atmosphere is dark and quiet. After a moment the layout fades out and the die appears.
+A split-screen layout. A silhouette figure sits on one side; on the other, a short italic quote fades in slowly and deliberately:
+
+> *"Success and failure share one thing: they change you."*
+
+The atmosphere is dark and quiet. After a moment the layout fades out and the die appears.
 
 On screens under 560px the layout stacks vertically — quote on top, silhouette below.
 
