@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ved-portfolio motion audit — 2026-05-28</title>
+  <style>
+    /* === Shell tokens === */
+    :root {
+      --bg: #ffffff;
+      --fg: #111111;
+      --border: #e5e5e5;
+      --accent: #111111;
+      --loop-dim: rgba(0, 0, 0, 0.45);
+      --card-radius: 12px;
+      --card-padding: 20px;
+      --gap: 12px;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a1a;
+        --fg: #f0f0f0;
+        --border: #333333;
+        --accent: #f0f0f0;
+        --loop-dim: rgba(240, 240, 240, 0.45);
+      }
+    }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--sans);
+      margin: 0;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 24px;
+      line-height: 1.5;
+    }
+    .demo-card {
+      position: relative;
+      background: var(--bg);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      border-radius: var(--card-radius);
+      padding: var(--card-padding);
+      max-width: 360px;
+      min-width: 280px;
+      font-family: var(--sans);
+      outline: none;
+    }
+    .demo-card__header {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--fg);
+      margin-bottom: 4px;
+      padding-right: 72px;
+    }
+    .demo-card__subhead {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--loop-dim);
+      margin-bottom: var(--gap);
+    }
+    .demo-card__stage {
+      background: var(--bg);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      gap: 16px;
+    }
+    .demo-card__loop-indicator {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--loop-dim);
+      letter-spacing: 0.02em;
+      user-select: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .demo-card__loop-indicator { display: none; }
+      [class*="__motion-target"] {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    /* === Report layout === */
+    .report-hero { margin-bottom: 32px; }
+    .report-hero h1 { font-size: 1.75rem; margin: 0 0 4px; }
+    .report-hero__date { font-family: var(--mono); color: var(--loop-dim); font-size: 0.875rem; margin: 0 0 16px; }
+    .report-hero__counts { font-size: 1rem; margin: 0 0 8px; }
+    .report-hero__counts a { color: inherit; text-decoration: none; border-bottom: 1px dashed var(--border); }
+    .report-hero__counts a:hover { border-bottom-style: solid; }
+    .report-hero__primary { font-family: var(--mono); color: var(--loop-dim); font-size: 0.875rem; margin: 0; }
+    .report-assessment { margin: 32px 0; font-size: 1.05rem; line-height: 1.6; border-left: 3px solid var(--border); padding-left: 16px; }
+    .perspective-section { margin: 48px 0; padding-top: 24px; border-top: 1px solid var(--border); }
+    .perspective-section h2 { font-size: 1.25rem; margin: 0 0 16px; }
+    .perspective-section h3 { font-size: 1rem; margin: 20px 0 8px; color: var(--loop-dim); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem; }
+    .perspective-section ul { margin: 0; padding-left: 20px; }
+    .perspective-section li { margin-bottom: 6px; }
+    .perspective-section__quote { margin-top: 24px; padding: 12px 16px; background: color-mix(in srgb, var(--fg) 5%, var(--bg)); border-left: 3px solid var(--accent); font-size: 0.95rem; }
+    .perspective-section__empty { font-style: italic; color: var(--loop-dim); padding: 12px 0; }
+    .finding-row { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; margin: 24px 0; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    @media (max-width: 768px) { .finding-row { grid-template-columns: 1fr; } .demo-card { max-width: 100%; } }
+    .finding-row__severity { font-family: var(--mono); font-size: 0.8rem; margin: 0 0 4px; }
+    .finding-row h4 { margin: 0 0 8px; font-size: 1rem; }
+    .finding-row p { margin: 0 0 8px; font-size: 0.9rem; line-height: 1.5; }
+    .finding-row__location { font-family: var(--mono); font-size: 0.8rem; color: var(--loop-dim); }
+    .finding-row code { font-family: var(--mono); font-size: 0.85em; background: color-mix(in srgb, var(--fg) 8%, var(--bg)); padding: 1px 4px; border-radius: 3px; }
+    .recommendations { margin: 48px 0; }
+    .recommendations table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .recommendations th, .recommendations td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .recommendations th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--loop-dim); }
+    .reference-summary { margin: 48px 0; padding: 24px; background: color-mix(in srgb, var(--fg) 4%, var(--bg)); border-radius: 8px; }
+    .reference-summary h2 { margin: 0 0 16px; font-size: 1.1rem; }
+    .reference-summary ul { padding-left: 20px; margin: 8px 0 0; }
+    .reference-summary li { margin-bottom: 6px; font-size: 0.9rem; }
+
+    /* ============================================================
+       FINDING 1 — Blur-everywhere: differentiated entrance
+       ============================================================ */
+    @keyframes motion-1-hero {
+      0%   { opacity: 0; transform: translateY(28px); filter: blur(10px); }
+      60%  { opacity: 1; transform: translateY(0);    filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+    @keyframes motion-1-card {
+      0%   { opacity: 0; transform: translateY(16px); filter: blur(4px); }
+      66%  { opacity: 1; transform: translateY(0);    filter: blur(0); }
+      100% { opacity: 1; transform: translateY(0);    filter: blur(0); }
+    }
+    .demo-card-1__motion-target-hero {
+      display: inline-block;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      animation: motion-1-hero 3s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+    }
+    .demo-card-1__motion-target-card {
+      display: inline-block;
+      padding: 10px 18px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      opacity: 0;
+      animation: motion-1-card 3s cubic-bezier(0.23, 1, 0.32, 1) 0.55s infinite both;
+    }
+
+    /* ============================================================
+       FINDING 2 — CSS var cascade on pointermove
+       ============================================================ */
+    @keyframes motion-2-tilt {
+      0%   { transform: perspective(600px) rotateY(-8deg) rotateX(4deg); }
+      66%  { transform: perspective(600px) rotateY(0deg)  rotateX(0deg);  }
+      100% { transform: perspective(600px) rotateY(0deg)  rotateX(0deg);  }
+    }
+    .demo-card-2__motion-target {
+      width: 160px;
+      height: 90px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--fg) 6%, var(--bg));
+      animation: motion-2-tilt 3s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+    }
+
+    /* ============================================================
+       FINDING 3 — Stagger on skill rows
+       ============================================================ */
+    @keyframes motion-3-row {
+      0%   { opacity: 0; transform: translateX(-8px); }
+      66%  { opacity: 1; transform: translateX(0);    }
+      100% { opacity: 1; transform: translateX(0);    }
+    }
+    .demo-card-3__motion-target {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+    .demo-card-3__row {
+      height: 32px;
+      border-radius: 4px;
+      background: color-mix(in srgb, var(--fg) 8%, var(--bg));
+      opacity: 0;
+      animation: motion-3-row 3s cubic-bezier(0.23, 1, 0.32, 1) infinite both;
+    }
+    .demo-card-3__row:nth-child(1) { animation-delay: calc(0 * 90ms); }
+    .demo-card-3__row:nth-child(2) { animation-delay: calc(1 * 90ms); }
+    .demo-card-3__row:nth-child(3) { animation-delay: calc(2 * 90ms); }
+    .demo-card-3__row:nth-child(4) { animation-delay: calc(3 * 90ms); }
+  </style>
+</head>
+<body>
+
+  <!-- ====== HERO ====== -->
+  <header class="report-hero">
+    <h1>ved-portfolio motion audit</h1>
+    <p class="report-hero__date">2026-05-28</p>
+    <p class="report-hero__counts">
+      <a href="#critical-findings">🔴 Critical: 1</a> ·
+      <a href="#important-findings">🟡 Important: 2</a> ·
+      <a href="#opportunity-findings">🟢 Opportunities: 4</a>
+    </p>
+    <p class="report-hero__primary">Primary: Jakub Krehel — Production Polish</p>
+  </header>
+
+  <!-- ====== OVERALL ASSESSMENT ====== -->
+  <section class="report-assessment">
+    <p>The portfolio's motion architecture is strong and intentional: a rare, ceremonial intro sequence earns its dramatic length and GSAP-driven die tumble; the shatter canvas is genuinely novel and lands with weight; the SpatialScene creates ambient depth without dominating. The bones are excellent. The main problem is a single GSAP <code>fromTo</code> call that blasts the same <code>blur(8px) / translateY(42px) / opacity 0</code> entrance across every element in Act Two — hero heading, profile photo, skill rows, project panels, and contact section all animate identically. That uniformity collapses the hierarchy the design language tries to establish. Fix the entrance differentiation and add stagger to skill rows, and this goes from "AI-polished" to genuinely crafted.</p>
+  </section>
+
+  <!-- ====== JAKUB — PRIMARY ====== -->
+  <section class="perspective-section" id="perspective-jakub">
+    <h2>Jakub Krehel — Production Polish</h2>
+
+    <div class="perspective-section__working-well">
+      <h3>What's Working Well</h3>
+      <ul>
+        <li>✓ Hover transitions on all interactive elements use consistent custom easing <code>cubic-bezier(0.23, 1, 0.32, 1)</code> — <code>src/styles.css:13</code></li>
+        <li>✓ Project panel border/glow transition on hover is graduated and layered, not a flat color pop — <code>src/styles.css:538–542</code></li>
+        <li>✓ Contact link hover shifts <code>translateX(-4px)</code> + color, giving directional feedback — <code>src/styles.css:757–760</code></li>
+        <li>✓ The intro's <code>.intro-exiting</code> fade uses blur as a state signal correctly: the screen loses focus as it leaves — <code>src/styles.css:107–110</code></li>
+        <li>✓ Reduced-motion correctly bypasses the entire intro, showing portfolio directly — <code>src/main.jsx:86–90</code></li>
+        <li>✓ The <code>critical-in</code> keyframe combines translateY + scale for a natural arrival — <code>src/styles.css:308–317</code></li>
+      </ul>
+    </div>
+
+    <div class="perspective-section__issues" id="jakub-issues">
+      <h3>Issues to Address</h3>
+
+      <!-- FINDING 1 -->
+      <div class="finding-row" id="finding-1">
+        <div class="finding-row__prose">
+          <p class="finding-row__severity">🔴 Critical</p>
+          <h4>Blur-everywhere entrances — identical parameters across all Act Two elements</h4>
+          <p>A single GSAP <code>fromTo</code> call applies <code>{ y: 42, opacity: 0, filter: "blur(8px)" }</code> identically to every <code>.reveal</code> element: hero copy, profile frame, both section headings, all four skill rows, all three project panels, and the contact section. That's 12+ elements sharing the same entrance values, which is the textbook blur-everywhere slop pattern (flag threshold: ≥4 elements with identical parameters).</p>
+          <p>The result: the hero heading "VED" lands with the same weight as a skill tag. A section heading has the same entrance as a project panel. There's no motion hierarchy — everything is equally important and equally bland. The design language establishes spatial depth; the animation should reinforce it.</p>
+          <p><strong>Fix:</strong> Differentiate by role. Hero mark (<code>.hero-mark</code>): longer duration (1.1s), larger translateY (60px), stronger blur (14px) — it's a rare, marquee moment. Skill rows: shorter (0.6s), horizontal slide-in (<code>translateX(-8px)</code>), no blur — stat blocks feel tabular, not floating. Project panels: keep blur but reduce to 6px, translateY 24px. Section headings: clip-path reveal (vertical wipe) instead of blur. Contact section: opacity only, 0.5s — quietest moment on the page.</p>
+          <p class="finding-row__location"><code>src/main.jsx:462–479</code> — the <code>gsap.utils.toArray(".reveal")</code> block</p>
+        </div>
+        <article class="demo-card" tabindex="-1">
+          <div class="demo-card__loop-indicator">↻ looping</div>
+          <div class="demo-card__header">Differentiated entrance by role</div>
+          <div class="demo-card__subhead">hero: 1.1s power4.out · card: 700ms power3.out</div>
+          <div class="demo-card__stage">
+            <div class="demo-card-1__motion-target-hero">VED</div>
+            <div class="demo-card-1__motion-target-card">Project panel</div>
+          </div>
+        </article>
+      </div>
+
+      <!-- FINDING 2 -->
+      <div class="finding-row" id="finding-2">
+        <div class="finding-row__prose">
+          <p class="finding-row__severity">🟡 Important</p>
+          <h4>CSS variable updates on every pointermove — cascade recalculation on tilt</h4>
+          <p><code>element.style.setProperty("--tilt-x", ...)</code> and <code>setProperty("--tilt-y", ...)</code> fire on every <code>pointermove</code> event (every ~16ms). CSS variable updates invalidate style recalculation through the entire subtree — the project panel's children (h3, tags, link button, visual) all recalculate on every frame. With three project panels potentially in view, that's a significant compute budget for an ambient effect.</p>
+          <p>The spotlight <code>--spot-x / --spot-y</code> variables feeding the <code>radial-gradient</code> can stay as CSS variables (gradient doesn't trigger child layout). The rotation tilt should be applied directly to <code>element.style.transform</code>.</p>
+          <p><strong>Fix:</strong> In <code>onMove</code>, replace <code>setProperty("--tilt-x", ...)</code> and <code>setProperty("--tilt-y", ...)</code> with a single direct <code>element.style.transform = `perspective(1200px) rotateX(...) rotateY(...)`</code>. In <code>onLeave</code>, reset with <code>element.style.transform = "perspective(1200px) rotateX(0deg) rotateY(0deg)"</code>.</p>
+          <p class="finding-row__location"><code>src/main.jsx:403–416</code> — the <code>onMove</code> handler in <code>ProjectPanel</code></p>
+        </div>
+        <article class="demo-card" tabindex="-1">
+          <div class="demo-card__loop-indicator">↻ looping</div>
+          <div class="demo-card__header">Direct transform (no CSS var cascade)</div>
+          <div class="demo-card__subhead">element.style.transform · no recalc</div>
+          <div class="demo-card__stage">
+            <div class="demo-card-2__motion-target"></div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="perspective-section__opportunities">
+      <h3>Opportunities</h3>
+      <ul>
+        <li>💡 <strong>Exit subtlety for project panels</strong> — The project panel hover state transitions in with border-color + box-shadow changes but there's no differentiated de-hover ease. Adding a slightly longer exit (300ms vs 240ms enter) would create the Jakub "exits should recede" feeling — <code>src/styles.css:535</code></li>
+        <li>💡 <strong>Hero mark entrance as a distinct moment</strong> — Currently the hero heading enters as part of <code>.hero-copy.reveal</code> as a group. Splitting it into its own GSAP target with a longer, more dramatic arc would match the design intent of "VED as a mark, not a resume heading" — <code>src/main.jsx:523–524</code></li>
+      </ul>
+    </div>
+
+    <p class="perspective-section__quote"><strong>Through Jakub's lens:</strong> The micro-interactions and hover states are genuinely polished — custom easing, layered glow, directional translation. The undoing is the macro-level entrance design, where everything sharing the same animation template flattens the spatial hierarchy the design document carefully established. Differentiated entrances are 3–4 targeted GSAP changes; the payoff on perceived craft is disproportionately large.</p>
+  </section>
+
+  <!-- ====== JHEY — SECONDARY ====== -->
+  <section class="perspective-section" id="perspective-jhey">
+    <h2>Jhey Tompkins — Experimentation &amp; Delight</h2>
+
+    <div class="perspective-section__working-well">
+      <h3>What's Working Well</h3>
+      <ul>
+        <li>✓ The shatter canvas animation is genuinely creative — 58 triangular shards with independent spin, alpha, and cubic ease-out. This is the Jhey spirit: make something specific and cool — <code>src/main.jsx:178–222</code></li>
+        <li>✓ The irregular typewriter cadence (<code>28 + Math.random() * 65</code>, plus comma pause) makes the quote feel spoken rather than mechanical — <code>src/main.jsx:99</code></li>
+        <li>✓ The Three.js tetrahedra use varied sizes, speeds, and drift directions — nothing is uniformly cloned — <code>src/main.jsx:309–320</code></li>
+        <li>✓ The GSAP bounce settle on the d20 after rolling (<code>ease: "bounce.out"</code>) is physically correct for a die landing — this is an intentional use, not slop — <code>src/main.jsx:234</code></li>
+      </ul>
+    </div>
+
+    <div class="perspective-section__issues" id="jhey-issues">
+      <h3>Issues to Address</h3>
+
+      <!-- FINDING 3 -->
+      <div class="finding-row" id="finding-3">
+        <div class="finding-row__prose">
+          <p class="finding-row__severity">🟡 Important</p>
+          <h4>Skill rows enter simultaneously — no stagger reinforces the stat-block reading order</h4>
+          <p>The four skill rows (Systems &amp; Robotics, ML &amp; AI, Software &amp; Infrastructure, Tools &amp; Workflow) all enter the viewport at the same ScrollTrigger threshold with identical animation parameters. This makes the "stat block" design metaphor feel like a dump rather than a reveal. The D&amp;D-inspired layout wants to be read top-to-bottom; simultaneous entrance undermines that directionality.</p>
+          <p>A sequential stagger (80–100ms per row) creates the feeling of entries resolving one after another — like a stat table populating. Combine with a horizontal slide-in (<code>translateX(-8px) → 0</code>) rather than vertical float, since the rows are horizontal data structures.</p>
+          <p><strong>Fix:</strong> In the GSAP reveal loop, detect skill rows and apply per-index delay: <code>delay: index * 0.09</code> (where index is derived from the row's position in the skill table). Or use CSS custom property <code>--row-index</code> on each row and CSS <code>animation-delay: calc(var(--row-index) * 90ms)</code> with <code>animation-fill-mode: backwards</code> to prevent pre-flash.</p>
+          <p class="finding-row__location"><code>src/main.jsx:543–548</code> — skill row render; <code>src/main.jsx:462–479</code> — GSAP reveal</p>
+        </div>
+        <article class="demo-card" tabindex="-1">
+          <div class="demo-card__loop-indicator">↻ looping</div>
+          <div class="demo-card__header">Staggered stat-block entrance</div>
+          <div class="demo-card__subhead">90ms stagger · translateX(-8px) · power3.out</div>
+          <div class="demo-card__stage" style="flex-direction: column; align-items: stretch; padding: 16px;">
+            <div class="demo-card-3__motion-target">
+              <div class="demo-card-3__row"></div>
+              <div class="demo-card-3__row"></div>
+              <div class="demo-card-3__row"></div>
+              <div class="demo-card-3__row"></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="perspective-section__opportunities">
+      <h3>Opportunities</h3>
+      <ul>
+        <li>💡 <strong>CSS <code>@property</code> for smooth ambient gold glow</strong> — The body's radial gold gradient (<code>rgba(201, 168, 76, 0.08)</code> at top) could shift its center <code>--glow-x / --glow-y</code> via scroll using <code>@property</code> type declarations, making the page feel spatially alive without any JS — <code>src/styles.css:31–35</code></li>
+        <li>💡 <strong>Clip-path wipe for section headings</strong> — "Capability map" and "Work panels" headings are perfect candidates for Emil's clip-path reveal (<code>inset(0 0 100% 0)</code> → <code>inset(0 0 0 0)</code>). Clip-path reveals feel architectural where blur feels editorial — better match for the "spatial workshop" direction — <code>src/main.jsx:539, 558</code></li>
+        <li>💡 <strong>Negative animation-delay for "already in-progress" spatial fragments</strong> — The Three.js fragments start from rest and drift into position on mount. Using Jhey's negative-delay technique (applying <code>animation-delay: calc(var(--index) * -0.3s)</code> to CSS-driven elements) would make fragments appear mid-drift from the first frame, removing the "things starting up" feeling — <code>src/main.jsx:309</code></li>
+        <li>💡 <strong>Roll button: add active scale feedback</strong> — The <code>.roll-button:active { transform: scale(0.98) }</code> exists in CSS but the GSAP roll trigger fires from the parent <code>onClick</code>. Adding Emil's tactile <code>scale(0.96)</code> press feedback directly to the roll button before the GSAP timeline starts would make the initiation feel immediate — <code>src/styles.css:193–195, src/main.jsx:225</code></li>
+      </ul>
+    </div>
+
+    <p class="perspective-section__quote"><strong>Through Jhey's lens:</strong> The shatter and the Three.js ambient scene show real creative coding instinct — these aren't template animations. The opportunity is to bring that same specificity to the portfolio content itself: stat-block stagger, section-matched easing personalities, clip-path reveals for the architectural headings. The bones are there; the moment-to-moment texture is where more craft lives.</p>
+  </section>
+
+  <!-- ====== EMIL — SELECTIVE ====== -->
+  <section class="perspective-section" id="perspective-emil">
+    <h2>Emil Kowalski — Restraint &amp; Speed</h2>
+    <p style="color: var(--loop-dim); font-size: 0.9rem; margin: 0 0 16px;"><em>Applied selectively — this is a creative portfolio where delight is appropriate. Emil's rules apply to high-frequency interactions (pointermove, scroll) and keyboard paths.</em></p>
+
+    <div class="perspective-section__working-well">
+      <h3>What's Working Well</h3>
+      <ul>
+        <li>✓ <code>prefers-reduced-motion</code> is fully respected — intro skipped, animations disabled, SpatialScene fragment oscillation guarded — <code>src/main.jsx:87–90, 363</code></li>
+        <li>✓ The scroll parallax on <code>.hero-mark</code> uses <code>scrub: true</code> — it's tied directly to scroll position, not on a timer, so it's interruptible and has zero animation lag — <code>src/main.jsx:492–501</code></li>
+        <li>✓ Skip intro is keyboard-accessible (visible on focus) and does an instant transition to Act Two — <code>src/styles.css:73–93</code></li>
+        <li>✓ CSS transitions are used for hover states (not keyframes), so they retarget mid-transition — <code>src/styles.css:352, 478, 595</code></li>
+        <li>✓ Fragment drift speed is very slow (0.001–0.004) — continuous ambient animation stays below the consciousness threshold — <code>src/main.jsx:315–316</code></li>
+      </ul>
+    </div>
+
+    <div class="perspective-section__issues">
+      <h3>Issues to Address</h3>
+      <p class="perspective-section__empty">No critical or important issues at Emil's level for this project type. The high-frequency interaction concerns (pointermove CSS variable cascade) are shared with Jakub above (Finding 2).</p>
+    </div>
+
+    <div class="perspective-section__opportunities">
+      <h3>Opportunities</h3>
+      <ul>
+        <li>💡 <strong>Keyboard focus skip-link polish</strong> — The <code>.skip-intro</code> button slides down on focus with a CSS transition. The skip-content link uses the same pattern. Both are correct; ensure the focus ring uses <code>outline-offset: 5px</code> (already set) and that the button text reads clearly against the dark intro background — <code>src/styles.css:73–93</code></li>
+      </ul>
+    </div>
+
+    <p class="perspective-section__quote"><strong>Through Emil's lens:</strong> For a portfolio seen once or twice by recruiters, the intro length (3.95 seconds to onComplete) is acceptable — it's a rare, ceremonial interaction. The scroll-tied animations are correctly implemented as scrub/live-position rather than triggered keyframes. The CSS variable cascade on pointermove (Finding 2) is the only meaningful frequency concern, and it's already flagged.</p>
+  </section>
+
+  <!-- ====== COMBINED RECOMMENDATIONS ====== -->
+  <section class="recommendations" id="critical-findings">
+    <h2>🔴 Critical (Must Fix)</h2>
+    <table>
+      <thead>
+        <tr><th>Issue</th><th>File</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Blur-everywhere: identical entrance for all 12+ Act Two elements collapses hierarchy</td>
+          <td><code>main.jsx:462–479</code></td>
+          <td>Split <code>.reveal</code> GSAP targets by role: hero heading (1.1s, large blur), skill rows (stagger, translateX, no blur), project panels (medium blur), contact (fade only)</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="recommendations" id="important-findings">
+    <h2>🟡 Important (Should Fix)</h2>
+    <table>
+      <thead>
+        <tr><th>Issue</th><th>File</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CSS variable updates on every pointermove cause subtree cascade recalc</td>
+          <td><code>main.jsx:403–416</code></td>
+          <td>Replace <code>setProperty("--tilt-x/y")</code> with direct <code>element.style.transform</code>; keep spotlight <code>--spot-x/y</code> as CSS variables</td>
+        </tr>
+        <tr>
+          <td>Skill rows enter simultaneously, removing the stat-block sequential-read feeling</td>
+          <td><code>main.jsx:543–548</code></td>
+          <td>Add 90ms-per-row GSAP stagger delay + change from translateY to translateX (-8px) entrance</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="recommendations" id="opportunity-findings">
+    <h2>🟢 Opportunities (Could Enhance)</h2>
+    <table>
+      <thead>
+        <tr><th>Enhancement</th><th>Where</th><th>Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>CSS <code>@property</code> for scroll-driven ambient gold glow shift</td>
+          <td><code>styles.css:31</code></td>
+          <td>Spatial depth without JS overhead</td>
+        </tr>
+        <tr>
+          <td>Clip-path wipe for section headings instead of blur+translateY</td>
+          <td><code>main.jsx:539, 558</code></td>
+          <td>Architectural feel vs. editorial softness</td>
+        </tr>
+        <tr>
+          <td>Negative animation-delay for fragments to appear mid-drift on load</td>
+          <td><code>main.jsx:309</code></td>
+          <td>Removes "starting up" feeling from spatial scene</td>
+        </tr>
+        <tr>
+          <td>Roll button active scale (0.96) before GSAP timeline fires</td>
+          <td><code>main.jsx:225</code></td>
+          <td>Immediate tactile feedback on the most important interaction</td>
+        </tr>
+        <tr>
+          <td>Softer de-hover exit on project panels (longer transition out)</td>
+          <td><code>styles.css:535</code></td>
+          <td>Exits recede; Jakub's polish principle</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ====== LENS REFERENCE SUMMARY ====== -->
+  <section class="reference-summary">
+    <h2>Lens Reference Summary</h2>
+    <p><strong>Which lens was referenced most:</strong> Jakub Krehel — Production Polish</p>
+    <p><strong>Why:</strong> Creative portfolio where delight is appropriate and the work will be seen by technical recruiters — polish and invisible quality outweigh speed restraint. The design document explicitly calls for "hireable, technical, memorable" which maps to Jakub's "professional but polished" register.</p>
+    <p><strong>If you want to lean differently:</strong></p>
+    <ul>
+      <li><strong>More Emil:</strong> Cut the scroll reveal animations entirely for non-hero elements — let the content appear instantly and put all motion budget into the intro and card interactions.</li>
+      <li><strong>More Jakub:</strong> Implement the clip-path section reveals, add exit animations to the intro sub-scenes (silhouette slides up subtly as die descends), and add animated icon transitions on the contact links.</li>
+      <li><strong>More Jhey:</strong> Explore CSS <code>@property</code> for the ambient glow, add a particle trail to the die tumble via canvas compositing, and give the "CRITICAL SUCCESS" text a more elaborate entrance (staggered letter reveal + glow pulse).</li>
+    </ul>
+  </section>
+
+</body>
+</html>
