@@ -235,6 +235,7 @@ button {
 .intro-die,
 .intro-die * {
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .intro-silhouette.sil-hidden {
@@ -289,6 +290,7 @@ button {
   cursor: none;
   animation: failure-fade 2800ms var(--ease-out) both;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .glass-vid {
