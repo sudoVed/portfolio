@@ -527,7 +527,7 @@ function Intro({ onComplete }) {
 
   return (
     <section className="intro" ref={rootRef} aria-label="Portfolio intro">
-      <button className="skip-intro" onClick={() => { skippedRef.current = true; stopAllAudio(); startBg(); onComplete(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)} aria-label="Skip intro">
+      <button className="skip-intro" onClick={() => { skippedRef.current = true; stopAllAudio(); playWoosh(0.75); startBg(); onComplete(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)} aria-label="Skip intro">
         <X size={22} weight="bold" />
       </button>
 <div className={`intro-silhouette${phase !== "silhouette" ? " sil-hidden" : ""}`} aria-hidden={phase !== "silhouette" ? "true" : undefined}>
@@ -845,6 +845,37 @@ function ProjectPanel({ project, index, onActive }) {
   );
 }
 
+function NavDot({ label, href }) {
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const update = () => {
+      const saved = el.style.transform;
+      el.style.transform = "none";
+      const rect = el.getBoundingClientRect();
+      el.style.transform = saved;
+
+      const inside =
+        mousePos.x >= rect.left && mousePos.x <= rect.right &&
+        mousePos.y >= rect.top  && mousePos.y <= rect.bottom;
+      el.classList.toggle("nav-hovered", inside);
+    };
+
+    window.addEventListener("pointermove", update, { passive: true });
+    return () => window.removeEventListener("pointermove", update);
+  }, []);
+
+  return (
+    <a ref={ref} href={href} onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+      {label}
+    </a>
+  );
+}
+
 function Portfolio() {
   const [activeProject, setActiveProject] = React.useState(0);
   React.useLayoutEffect(() => {
@@ -916,9 +947,7 @@ function Portfolio() {
 <SpatialScene activeProject={activeProject} />
       <nav className="side-nav" aria-label="Sections">
         {["About", "Skills", "Projects", "Contact"].map((item) => (
-          <a key={item} href={`#${item.toLowerCase()}`} onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh( 0.75)}>
-            {item}
-          </a>
+          <NavDot key={item} label={item} href={`#${item.toLowerCase()}`} />
         ))}
       </nav>
       <main id="content">
