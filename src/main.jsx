@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { ArrowUpRight, EnvelopeSimple, GithubLogo, LinkedinLogo } from "@phosphor-icons/react";
+import { ArrowUpRight, DownloadSimple, EnvelopeSimple, GithubLogo, LinkedinLogo, X } from "@phosphor-icons/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
@@ -39,6 +39,22 @@ function startBg() {
   }
   if (bgAudio.paused) bgAudio.play().catch(() => {});
 }
+
+function stopAllAudio() {
+  if (bgAudio) {
+    bgAudio.pause();
+    bgAudio = null;
+  }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (!bgAudio) return;
+  if (document.hidden) {
+    bgAudio.pause();
+  } else {
+    bgAudio.play().catch(() => {});
+  }
+});
 
 // Prime browser cache for all audio immediately on page load
 [bgSrc, hoverSrc, wallSrc, failSrc, glassSrc, wooshSrc, woosh2Src].forEach(src => {
@@ -134,6 +150,20 @@ function DieScene({ onReady, dieRef, mappingMode = false }) {
 
     wrapper.style.transform = "translateY(-360px)";
     const onLoad = () => {
+      const model = viewer.model;
+      const mat0 = model?.materials?.[0];
+      if (mat0) {
+        mat0.pbrMetallicRoughness?.setBaseColorFactor([0.01, 0.01, 0.01, 1.0]);
+        mat0.setEmissiveFactor?.([0, 0, 0]);
+      }
+      const mat1 = model?.materials?.[1];
+      if (mat1) {
+        mat1.pbrMetallicRoughness?.setBaseColorFactor([0.48, 0.28, 0.02, 1.0]);
+        mat1.pbrMetallicRoughness?.setMetallicFactor?.(0.85);
+        mat1.pbrMetallicRoughness?.setRoughnessFactor?.(0.35);
+        mat1.setEmissiveFactor?.([0.06, 0.04, 0.0]);
+      }
+
       const start = performance.now();
       const dur = 2200;
       const step = (now) => {
@@ -306,8 +336,12 @@ function GlassScreen({ introRef, onComplete }) {
   const isSmall = window.matchMedia("(max-width: 569px)").matches;
 
   React.useEffect(() => {
-    const t = window.setTimeout(() => setReady(true), 800);
-    return () => window.clearTimeout(t);
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.readyState >= 4) { setReady(true); return; }
+    const onReady = () => setReady(true);
+    v.addEventListener("canplaythrough", onReady);
+    return () => v.removeEventListener("canplaythrough", onReady);
   }, []);
 
   const handleMove = (e) => setCursor({ x: e.clientX, y: e.clientY });
@@ -335,7 +369,7 @@ function GlassScreen({ introRef, onComplete }) {
   return (
     <div className="glass-screen" onMouseMove={handleMove} onClick={handleClick}>
       <video ref={videoRef} src={isSmall ? "/assets/glass-small.mp4" : "/assets/glass.mp4"} className={isSmall ? "glass-vid-small" : "glass-vid"} preload="auto" onEnded={handleEnd} />
-      {!playing && (
+      {ready && !playing && (
         <span className="hammer-cursor" style={{ transform: `translate(${cursor.x - 26}px, ${cursor.y - 10}px)` }}>
           <img src={hammerImg} alt="" />
         </span>
@@ -347,6 +381,7 @@ function GlassScreen({ introRef, onComplete }) {
 function Intro({ onComplete }) {
   const rootRef = React.useRef(null);
   const dieRef = React.useRef(null);
+  const skippedRef = React.useRef(false);
   const [phase, setPhase] = React.useState("silhouette");
   const [ready, setReady] = React.useState(false);
   const reducedMotion = useReducedMotion();
@@ -400,6 +435,7 @@ function Intro({ onComplete }) {
     let prevTime = bounceStart;
 
     const bounceStep = (now) => {
+      if (skippedRef.current) return;
       const elapsed = now - bounceStart;
       const dt = Math.min((now - prevTime) / 1000, 0.033);
       prevTime = now;
@@ -439,6 +475,7 @@ function Intro({ onComplete }) {
       let snapPrevTime = snapStart;
 
       const snapStep = (now) => {
+        if (skippedRef.current) return;
         const t = Math.min((now - snapStart) / SNAP_DUR, 1);
         const dt = Math.min((now - snapPrevTime) / 1000, 0.033);
         snapPrevTime = now;
@@ -488,20 +525,21 @@ function Intro({ onComplete }) {
 
   return (
     <section className="intro" ref={rootRef} aria-label="Portfolio intro">
-      <button className="skip-intro" onClick={() => { playWoosh( 0.75); startBg(); onComplete(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)}>
-        Skip intro
+      <button className="skip-intro" onClick={() => { skippedRef.current = true; stopAllAudio(); startBg(); onComplete(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)} aria-label="Skip intro">
+        <X size={22} weight="bold" />
       </button>
 <div className={`intro-silhouette${phase !== "silhouette" ? " sil-hidden" : ""}`} aria-hidden={phase !== "silhouette" ? "true" : undefined}>
         <img src="/assets/silhouette.png" scale="150%" alt="" />
         <p className="quote-text">{quote}</p>
       </div>
       <div
-        className={`intro-die${phase !== "silhouette" ? " die-active" : ""}${phase === "fading" || phase === "glass" ? " die-exit" : ""}`}
+        className={`intro-die${phase !== "silhouette" ? " die-active" : ""}${phase === "fading" || phase === "glass" ? " die-exit" : ""}${phase === "die" && ready ? " die-clickable" : ""}`}
         aria-hidden={phase === "silhouette" ? "true" : undefined}
+        onClick={phase === "die" && ready ? () => { playWoosh2(0.25); roll(); } : undefined}
       >
         {phase !== "silhouette" && <DieScene onReady={() => setReady(true)} dieRef={dieRef} />}
         {phase === "die" && ready && (
-          <button className="roll-button" onClick={() => { playWoosh2( 0.25); roll(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)}>
+          <button className="roll-button" onClick={(e) => { e.stopPropagation(); playWoosh2(0.25); roll(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)}>
             Roll for Perception
           </button>
         )}
@@ -885,7 +923,7 @@ function Portfolio() {
         <section className="hero" id="about">
           <div className="hero-inner">
             <div className="hero-copy">
-              <h1 className="hero-mark">VED</h1>
+              <h1 className="hero-mark">VEDANSH</h1>
               <p className="discipline">Full-Stack Developer / Robotics / Machine Learning</p>
               <p className="about-copy">
                 I consider myself someone who is driven by curiosity and desire. I enjoy trying new things, building new
@@ -893,7 +931,7 @@ function Portfolio() {
               </p>
             </div>
             <figure className="profile-frame">
-              <img src="/assets/profile.jpg" alt="Portrait of Ved Somani" />
+              <img src="/assets/profile.jpg" alt="Portrait of Vedansh Somani" />
             </figure>
           </div>
         </section>
@@ -930,9 +968,13 @@ function Portfolio() {
         </section>
 
         <section className="contact-section" id="contact" aria-labelledby="contact-title">
+          <p className="contact-eyebrow">Let's talk.</p>
           <div className="contact-core">
-            <h2 id="contact-title">Let's talk.</h2>
+            <h2 id="contact-title">Vedansh Somani</h2>
             <div className="contact-links">
+              <a href="/assets/resume.pdf" download="Vedansh_Somani_Resume.pdf" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+                <DownloadSimple weight="duotone" /> Resume
+              </a>
               <a href="https://github.com/sudoVed" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh( 0.75)}>
                 <GithubLogo weight="duotone" /> GitHub
               </a>
@@ -946,7 +988,7 @@ function Portfolio() {
           </div>
         </section>
       </main>
-      <footer>Copyright 2026 Ved / Built with intent.</footer>
+      <footer>Copyright 2026 Vedansh Somani / Built with intent.</footer>
     </div>
   );
 }
