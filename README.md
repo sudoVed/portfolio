@@ -85,9 +85,9 @@ A minimal closing section. A large heading on the left, a column of four icon-la
 | Link | Action |
 |---|---|
 | Resume | PDF download |
-| GitHub | github.com/sudoVed |
-| LinkedIn | linkedin.com/in/vedansh-somani-583a91316 |
-| Email | vedansh.somani.study@gmail.com |
+| GitHub | GitHub hyperlink |
+| LinkedIn | LinkedIn hyperlink |
+| Email | Email Address |
 
 ---
 
