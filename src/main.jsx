@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { ArrowUpRight, DownloadSimple, EnvelopeSimple, GithubLogo, LinkedinLogo, X } from "@phosphor-icons/react";
+import { ArrowUpRight, DownloadSimple, EnvelopeSimple, FastForward, GithubLogo, LinkedinLogo } from "@phosphor-icons/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
@@ -527,8 +527,15 @@ function Intro({ onComplete }) {
 
   return (
     <section className="intro" ref={rootRef} aria-label="Portfolio intro">
-      <button className="skip-intro" onClick={() => { skippedRef.current = true; stopAllAudio(); playWoosh(0.75); startBg(); onComplete(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)} aria-label="Skip intro">
-        <X size={22} weight="bold" />
+      <video
+        src={window.matchMedia("(max-width: 569px)").matches ? "/assets/glass-small.mp4" : "/assets/glass.mp4"}
+        preload="auto"
+        style={{ display: "none" }}
+        aria-hidden="true"
+      />
+      <button className="skip-intro" onClick={() => { skippedRef.current = true; stopAllAudio(); playWoosh(0.75); startBg(); onComplete(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)} aria-label="Skip to portfolio">
+        <FastForward size={15} weight="bold" />
+        <span className="skip-label">Portfolio</span>
       </button>
 <div className={`intro-silhouette${phase !== "silhouette" ? " sil-hidden" : ""}`} aria-hidden={phase !== "silhouette" ? "true" : undefined}>
         <img src="/assets/silhouette.png" scale="150%" alt="" />
@@ -1001,7 +1008,7 @@ function Portfolio() {
         <section className="contact-section" id="contact" aria-labelledby="contact-title">
           <p className="contact-eyebrow">Let's talk.</p>
           <div className="contact-core">
-            <h2 id="contact-title">Vedansh Somani</h2>
+            <h2 id="contact-title" className="name-gradient">Vedansh Somani</h2>
             <div className="contact-links">
               <a href="/assets/resume.pdf" download="Vedansh_Somani_Resume.pdf" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
                 <DownloadSimple weight="duotone" /> Resume

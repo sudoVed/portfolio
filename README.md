@@ -46,7 +46,7 @@ On small screens (≤ 569px) a portrait-cropped version of the glass video plays
 
 ### Skip intro
 
-An X icon button is fixed to the top-right corner throughout the entire intro. Clicking it stops any in-progress audio, plays a woosh, starts the background music, and jumps to the portfolio.
+A pill button fixed to the top-right corner throughout the entire intro — a FastForward icon (▶▶) followed by the label "Portfolio". Clicking it stops any in-progress audio, plays a woosh, starts the background music, and jumps to the portfolio.
 
 ---
 
@@ -80,7 +80,7 @@ Every panel tilts in 3D toward the cursor while the pointer is inside it (deskto
 
 ### Contact
 
-A minimal closing section. A large heading on the left, a column of four icon-labelled links on the right. The links slide left on hover and turn gold.
+A minimal closing section. A large heading on the left renders the name in a gold gradient — dark amber at the edges sweeping to a soft cream at the centre. A column of four icon-labelled links sits on the right. The links slide left on hover and turn gold.
 
 | Link | Action |
 |---|---|
@@ -93,7 +93,7 @@ A minimal closing section. A large heading on the left, a column of four icon-la
 
 ## Sound Design
 
-All audio respects browser autoplay policy — sounds only play after the first user interaction. All audio files are preloaded into the browser cache on page load via `Audio()` objects (audio), and the 3D model and glass videos are declared in `<link rel="preload">` tags (video, GLB).
+All audio respects browser autoplay policy — sounds only play after the first user interaction. All audio files are preloaded into the browser cache on page load via `Audio()` objects. The glass video is preloaded by mounting a hidden `<video preload="auto">` element at the very start of the intro, giving the browser the full duration of the die-roll sequence (~5 s) to buffer it before it is needed.
 
 The background track pauses automatically when the tab is hidden and resumes when the tab regains focus.
 

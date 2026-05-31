@@ -79,22 +79,28 @@ button {
   right: 1.1rem;
   left: auto;
   z-index: 200;
-  border: none;
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
   background: transparent;
   color: var(--gold);
-  width: 3rem;
-  height: 3rem;
-  padding: 0;
+  height: 2.25rem;
+  padding: 0 0.85rem;
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: opacity 180ms var(--ease-out);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: opacity 180ms var(--ease-out), border-color 180ms var(--ease-out);
 }
 
 .skip-intro:focus,
 .skip-intro:hover {
   opacity: 0.65;
+  border-color: color-mix(in srgb, var(--gold) 60%, transparent);
 }
+
+.skip-intro { display: flex; align-items: center; gap: 0.4rem; }
 
 .intro {
   position: fixed;
@@ -490,6 +496,13 @@ main {
   font-size: clamp(2.2rem, 5vw, 4.5rem);
   line-height: 1;
   letter-spacing: -0.02em;
+}
+
+.name-gradient {
+  background: linear-gradient(115deg, var(--gold) 0%, #e8d89a 50%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .section-heading p {
