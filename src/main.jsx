@@ -1016,7 +1016,7 @@ function Portfolio() {
               <a href="https://github.com/sudoVed" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh( 0.75)}>
                 <GithubLogo weight="duotone" /> GitHub
               </a>
-              <a href="https://www.linkedin.com/in/vedansh-somani-583a91316/" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh( 0.75)}>
+              <a href="https://www.linkedin.com/in/vedansh-somani/" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh( 0.75)}>
                 <LinkedinLogo weight="duotone" /> LinkedIn
               </a>
               <a href="mailto:vedansh.somani.study@gmail.com" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
