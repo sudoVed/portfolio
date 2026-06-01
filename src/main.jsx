@@ -633,7 +633,7 @@ function SpatialScene({ activeProject }) {
 
     // Two instanced meshes — one draw call each instead of 180 separate draw calls
     let accentCount = 0;
-    for (let i = 0; i < TOTAL; i++) if (i % 11 === 0) accentCount++;
+    for (let i = 0; i < TOTAL; i++) if (i % 7 === 0) accentCount++;
     const regularInst = new THREE.InstancedMesh(sharedGeo, fragmentMaterial, TOTAL - accentCount);
     const accentInst  = new THREE.InstancedMesh(sharedGeo, accentMaterial, accentCount);
     regularInst.frustumCulled = false;
@@ -750,7 +750,7 @@ function SpatialScene({ activeProject }) {
         dummy.scale.setScalar(scl[i] * scaleMult);
         dummy.updateMatrix();
 
-        if (i % 11 === 0) accentInst.setMatrixAt(accIdx++, dummy.matrix);
+        if (i % 7 === 0) accentInst.setMatrixAt(accIdx++, dummy.matrix);
         else               regularInst.setMatrixAt(regIdx++, dummy.matrix);
       }
 
@@ -967,10 +967,10 @@ function Portfolio() {
       });
 
       // Contact: quietest moment — opacity fade only
-      gsap.from(".contact-core", {
+      gsap.from(".contact-section", {
         opacity: 0,
         duration: 0.6, ease: "power2.out",
-        scrollTrigger: { trigger: ".contact-core", start: "top 80%" },
+        scrollTrigger: { trigger: ".contact-section", start: "top 80%" },
       });
 
       gsap.utils.toArray(".project-panel").forEach((panel, index) => {
@@ -1045,27 +1045,23 @@ function Portfolio() {
         </section>
 
         <section className="contact-section" id="contact" aria-labelledby="contact-title">
-          <p className="contact-eyebrow">Let's talk.</p>
-          <div className="contact-core">
-            <h2 id="contact-title" className="name-gradient">Vedansh Somani</h2>
-            <div className="contact-links">
-              <a href="/assets/resume.pdf" download="Vedansh_Somani_Resume.pdf" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
-                <DownloadSimple weight="duotone" /> Resume
-              </a>
-              <a href="https://github.com/sudoVed" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh( 0.75)}>
-                <GithubLogo weight="duotone" /> GitHub
-              </a>
-              <a href="https://www.linkedin.com/in/vedansh-somani/" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh( 0.75)}>
-                <LinkedinLogo weight="duotone" /> LinkedIn
-              </a>
-              <a href="mailto:vedansh.somani.study@gmail.com" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
-                <EnvelopeSimple weight="duotone" /> Email
-              </a>
-            </div>
+          <h2 id="contact-title" className="name-gradient">Vedansh Somani</h2>
+          <div className="contact-links">
+            <a href="/assets/resume.pdf" download="Vedansh_Somani_Resume.pdf" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+              <DownloadSimple weight="bold" /> Resume
+            </a>
+            <a href="https://github.com/sudoVed" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+              <GithubLogo weight="bold" /> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/vedansh-somani/" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+              <LinkedinLogo weight="bold" /> LinkedIn
+            </a>
+            <a href="mailto:vedansh.somani.study@gmail.com" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+              <EnvelopeSimple weight="bold" /> Email
+            </a>
           </div>
         </section>
       </main>
-      <footer>Copyright 2026 Vedansh Somani / Built with intent.</footer>
     </div>
   );
 }

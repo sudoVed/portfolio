@@ -52,7 +52,7 @@ A pill button fixed to the top-right corner throughout the entire intro — a Fa
 
 ### 3D Background
 
-A continuous field of 180 floating tetrahedra fills the entire page behind the content. The scene renders in two GPU draw calls using instanced meshes — one batch for the 163 charcoal fragments, one for the 17 gold accent fragments.
+A continuous field of 180 floating tetrahedra fills the entire page behind the content. The scene renders in two GPU draw calls using instanced meshes — one batch for the 154 charcoal fragments, one for the 26 gold accent fragments.
 
 **At rest** the fragments drift gently, each spinning on its own axis at a slightly different rate. A warm gold point light moves slowly with the cursor, casting shifting highlights across the metallic surfaces. Most fragments are dark charcoal; roughly one in eleven is gold.
 
@@ -78,7 +78,7 @@ Every panel tilts in 3D toward the cursor while the pointer is inside it (deskto
 
 ### Contact
 
-A minimal closing section. A large heading on the left renders the name in a gold gradient — dark amber at the edges sweeping to a soft cream at the centre. A column of four icon-labelled links sits on the right. The links slide left on hover and turn gold.
+A full-viewport closing section, vertically and horizontally centred. The name renders in a gold gradient above a thin horizontal rule. Directly below the rule, four icon-labelled links sit in a single horizontal row that wraps on small screens. Links lift slightly on hover and turn gold.
 
 | Link | Action |
 |---|---|
@@ -113,10 +113,10 @@ The background track pauses automatically when the tab is hidden and resumes whe
 ## Interaction Details
 
 - **Cursor** — the cursor is always the default arrow. The only exception is during the glass act, where a hammer emoji replaces it entirely.
-- **Scroll** — the 3D background responds continuously to scroll position. All content sections animate in on first entry via scroll triggers: the hero blurs in, section headings translate up, skill rows stagger in horizontally, project panels blur in, the contact block fades.
+- **Scroll** — the 3D background responds continuously to scroll position. All content sections animate in on first entry via scroll triggers: the hero blurs in, section headings translate up, skill rows stagger in horizontally, project panels blur in, the contact section fades. Each of the four main sections (skills, projects, contact) occupies at least one full viewport height, so the page feels paginated when scrolling.
 - **Keyboard** — the die can be rolled with Space or Enter. The skip button is always reachable by tab.
 - **Tap highlight** — the `-webkit-tap-highlight-color` flash is suppressed globally on all interactive elements and throughout the intro sequence for consistent mobile behaviour.
-- **Sidebar nav hover** — each nav dot is a `NavDot` component that drives its own hover state via `pointermove` rather than CSS `:hover`. On each pointer move it briefly clears the element's inline transform, reads the flat `getBoundingClientRect()`, then restores — so the active zone is always the dot's base size, never the scaled-up size. Same technique used by the project panels.
+- **Sidebar nav** — four dots fixed to the right edge, one per section. Each is a plain `<a href="#section-id">` anchor; the browser's native smooth scroll handles the rest. Dots highlight on hover only — there is no scroll-position-based active state. The `NavDot` component drives hover via `pointermove` rather than CSS `:hover`, briefly clearing its transform to read flat layout bounds so the hit zone stays the dot's base size regardless of scale. Same technique used by the project panels.
 - **Responsive** — at 860px the multi-column layouts collapse to single-column and the sidebar nav hides. At 560px type scales down and die/roll-button positions are adjusted for the smaller 160px die.
 - **Reduced motion** — if the viewer has reduced motion enabled at the OS level, the intro is skipped entirely, all scroll animations are suppressed, and the 3D background is rendered at 18% opacity (static) instead of animating.
 
