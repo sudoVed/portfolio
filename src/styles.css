@@ -268,17 +268,37 @@ button {
   }
 }
 
-.intro-die .failure-label {
+.intro-die .failure-label,
+.intro-die .success-label {
   position: absolute;
   top: calc(50% + 14rem);
   margin: 0;
-  color: #c0392b;
   font-family: Cinzel, Georgia, "Times New Roman", serif;
   font-size: clamp(2rem, 5vw, 4rem);
   letter-spacing: 0.36em;
   text-transform: uppercase;
-  text-shadow: 0 0 60px rgba(192, 57, 43, 0.7), 0 0 20px rgba(192, 57, 43, 0.5);
   animation: failure-text-in 600ms var(--ease-out) both;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18em;
+}
+
+.intro-die .failure-label {
+  color: #c0392b;
+  text-shadow: 0 0 60px rgba(192, 57, 43, 0.7), 0 0 20px rgba(192, 57, 43, 0.5);
+}
+
+.intro-die .success-label {
+  color: var(--gold);
+  letter-spacing: 0.22em;
+  text-shadow: 0 0 60px rgba(201, 168, 76, 0.7), 0 0 20px rgba(201, 168, 76, 0.5);
+}
+
+.intro-die .roll-result {
+  font-size: 0.38em;
+  letter-spacing: 0.14em;
+  opacity: 0.68;
 }
 
 .intro-die.die-exit {
@@ -960,6 +980,12 @@ footer {
     top: calc(50% + 9rem);
     font-size: clamp(1.6rem, 5vw, 2.4rem);
     letter-spacing: 0.28em;
+  }
+
+  .intro-die .success-label {
+    top: calc(50% + 9rem);
+    font-size: clamp(1.6rem, 5vw, 2.4rem);
+    letter-spacing: 0.16em;
   }
 
   /* Main content: tighter horizontal padding, smaller headings */

@@ -9,6 +9,7 @@ import bgSrc from "../assets/bg.mp3";
 import hoverSrc from "../assets/button-hover.mp3";
 import wallSrc from "../assets/dice-hitting-wall.mp3";
 import failSrc from "../assets/fail.mp3";
+import successSrc from "../assets/success.mp3";
 import glassSrc from "../assets/glass-break.mp3";
 import hammerImg from "../assets/hammer.png";
 import wooshSrc from "../assets/woosh.mp3";
@@ -57,7 +58,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // Prime browser cache for all audio immediately on page load
-[bgSrc, hoverSrc, wallSrc, failSrc, glassSrc, wooshSrc, woosh2Src].forEach(src => {
+[bgSrc, hoverSrc, wallSrc, failSrc, successSrc, glassSrc, wooshSrc, woosh2Src].forEach(src => {
   const a = new Audio();
   a.preload = "auto";
   a.src = src;
@@ -384,133 +385,156 @@ function Intro({ onComplete }) {
   const rootRef = React.useRef(null);
   const dieRef = React.useRef(null);
   const skippedRef = React.useRef(false);
-  const [phase, setPhase] = React.useState("silhouette");
+  const autoRotateStartRef = React.useRef(null);
+  const [phase, setPhase] = React.useState("die");
   const [ready, setReady] = React.useState(false);
+  const [rolledFaceNum, setRolledFaceNum] = React.useState(null);
   const reducedMotion = useReducedMotion();
   const quote = "Success and failure share one thing: they change you.";
 
   React.useEffect(() => {
-    if (reducedMotion) {
-      onComplete();
-      return;
-    }
-    const t = window.setTimeout(() => setPhase("die"), 2800);
-    return () => window.clearTimeout(t);
+    if (reducedMotion) onComplete();
   }, [onComplete, reducedMotion]);
 
   React.useEffect(() => {
     if (phase !== "failure") return;
-    playOnce(failSrc, 0.4);
-    const t = window.setTimeout(() => {
-      setPhase("fading");
-      window.setTimeout(() => setPhase("glass"), 400);
-    }, 1800);
-    return () => window.clearTimeout(t);
-  }, [phase]);
+    if (rolledFaceNum < 17) {
+      playOnce(failSrc, 0.4);
+      const t = window.setTimeout(() => {
+        setPhase("fading");
+        window.setTimeout(() => setPhase("glass"), 400);
+      }, 1800);
+      return () => window.clearTimeout(t);
+    } else {
+      playOnce(successSrc, 0.6);
+      const t = window.setTimeout(() => {
+        startBg();
+        if (rootRef.current) rootRef.current.classList.add("intro-exiting");
+        window.setTimeout(onComplete, 500);
+      }, 1800);
+      return () => window.clearTimeout(t);
+    }
+  }, [phase, rolledFaceNum, onComplete]);
 
 
   const roll = React.useCallback(() => {
     if (!ready || phase !== "die") return;
-    setPhase("rolling");
+    let offby = 0.0;
+    if (autoRotateStartRef.current !== null) {
+      const elapsed = (performance.now() - autoRotateStartRef.current) / 1000;
+      offby = (elapsed * 40) % 360;
+      console.log(`Auto-rotate: ${elapsed.toFixed(3)}s → ${(elapsed * 40).toFixed(1)}° spun`);
+    }
+    const face = Math.ceil(Math.random() * 19) + 1;        //only 2 - 20
+    setRolledFaceNum(face);
+    setPhase("winding");
     const { viewer, wrapper } = dieRef.current;
     if (!viewer || !wrapper) return;
 
-    // Face 20 is never shown — roll 1–19 only
-    const rolledFace = Math.ceil(Math.random() * 19);
+    const WINDUP_RPS = 360;
+    const windupdistance = (offby <= 180)? offby+360: offby;
+    const windupMs = Math.round((windupdistance / WINDUP_RPS) * 1000);
+    viewer.setAttribute("auto-rotate", "");
+    viewer.setAttribute("rotation-per-second", `${-WINDUP_RPS}deg`);
 
-    viewer.removeAttribute("auto-rotate");
-    const initOrbit = viewer.getCameraOrbit();
-    let spinTheta = initOrbit.theta;
-    const spinPhi = initOrbit.phi;
-    const SPIN_RATE = (720 * Math.PI) / 180; // rad/s
-
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    const dieRadius = viewer.offsetWidth / 2;
-    const MAX_X = W / 2 - dieRadius;
-    const MAX_Y = H / 2 - dieRadius;
-    let vx = (Math.random() > 0.5 ? 1 : -1) * (W * 2.0 + Math.random() * W * 0.6);
-    let vy = (Math.random() > 0.5 ? 1 : -1) * (H * 1.5 + Math.random() * H * 0.5);
-    let px = 0, py = 0;
-    const BOUNCE_DUR = 2400;
-    const bounceStart = performance.now();
-    let prevTime = bounceStart;
-
-    const bounceStep = (now) => {
+    window.setTimeout(() => {
       if (skippedRef.current) return;
-      const elapsed = now - bounceStart;
-      const dt = Math.min((now - prevTime) / 1000, 0.033);
-      prevTime = now;
-      vx *= Math.pow(0.99, dt * 60);
-      vy *= Math.pow(0.99, dt * 60);
-      px += vx * dt;
-      py += vy * dt;
-      let hitWall = false;
-      if (px > MAX_X)  { px = MAX_X;  vx = -Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWall = true; }
-      if (px < -MAX_X) { px = -MAX_X; vx =  Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWall = true; }
-      if (py > MAX_Y)  { py = MAX_Y;  vy = -Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWall = true; }
-      if (py < -MAX_Y) { py = -MAX_Y; vy =  Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWall = true; }
-      if (hitWall) playWall();
-      wrapper.style.transform = `translate(${px}px, ${py}px)`;
-      spinTheta += SPIN_RATE * dt;
-      viewer.setAttribute("camera-orbit", `${spinTheta}rad ${spinPhi}rad 110%`);
-      if (elapsed < BOUNCE_DUR) requestAnimationFrame(bounceStep);
-      else snapToFace();
-    };
-    requestAnimationFrame(bounceStep);
+      viewer.removeAttribute("auto-rotate");
+      setPhase("rolling");
+      playWoosh2(0.25);
 
-    function snapToFace() {
-      const startRadius = viewer.getCameraOrbit().radius;
-      const rawTheta = spinTheta;
-      const face = rolledFace;
-      const [ft, fp] = FACE_POSITIONS[face];
+      const initOrbit = viewer.getCameraOrbit();
       const twoPI = Math.PI * 2;
-      const norm = ((rawTheta % twoPI) + twoPI) % twoPI;
-      let diff = ((ft - norm) % twoPI + twoPI) % twoPI;
-      if (diff > Math.PI) diff -= twoPI;
-      const SNAP_DUR = 2500;
-      const targetTheta = rawTheta + diff + 2 * twoPI;
-      const startTheta = rawTheta, startPhi = spinPhi;
-      const dist = targetTheta - startTheta;
-      const v0 = Math.min(SPIN_RATE * (SNAP_DUR / 1000) / dist, 3.0);
-      const snapStart = performance.now();
-      let snapPrevTime = snapStart;
+      const snapTheta = ((initOrbit.theta % twoPI) + twoPI) % twoPI;
+      let spinTheta = snapTheta;
+      const spinPhi = initOrbit.phi;
+      const SPIN_RATE = (720 * Math.PI) / 180;
 
-      const snapStep = (now) => {
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const dieRadius = viewer.offsetWidth / 2;
+      const MAX_X = W / 2 - dieRadius;
+      const MAX_Y = H / 2 - dieRadius;
+      let vx = (Math.random() > 0.5 ? 1 : -1) * (W * 2.0 + Math.random() * W * 0.6);
+      let vy = (Math.random() > 0.5 ? 1 : -1) * (H * 1.5 + Math.random() * H * 0.5);
+      let px = 0, py = 0;
+      const BOUNCE_DUR = 2400;
+      const bounceStart = performance.now();
+      let prevTime = bounceStart;
+
+      const bounceStep = (now) => {
         if (skippedRef.current) return;
-        const t = Math.min((now - snapStart) / SNAP_DUR, 1);
-        const dt = Math.min((now - snapPrevTime) / 1000, 0.033);
-        snapPrevTime = now;
-
-        vx *= Math.pow(0.97, dt * 60);
-        vy *= Math.pow(0.97, dt * 60);
+        const elapsed = now - bounceStart;
+        const dt = Math.min((now - prevTime) / 1000, 0.033);
+        prevTime = now;
+        vx *= Math.pow(0.99, dt * 60);
+        vy *= Math.pow(0.99, dt * 60);
         px += vx * dt;
         py += vy * dt;
-        let hitWallSnap = false;
-        if (px > MAX_X)  { px = MAX_X;  vx = -Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWallSnap = true; }
-        if (px < -MAX_X) { px = -MAX_X; vx =  Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWallSnap = true; }
-        if (py > MAX_Y)  { py = MAX_Y;  vy = -Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWallSnap = true; }
-        if (py < -MAX_Y) { py = -MAX_Y; vy =  Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWallSnap = true; }
-        if (hitWallSnap) playWall();
+        let hitWall = false;
+        if (px > MAX_X)  { px = MAX_X;  vx = -Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWall = true; }
+        if (px < -MAX_X) { px = -MAX_X; vx =  Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWall = true; }
+        if (py > MAX_Y)  { py = MAX_Y;  vy = -Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWall = true; }
+        if (py < -MAX_Y) { py = -MAX_Y; vy =  Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWall = true; }
+        if (hitWall) playWall();
         wrapper.style.transform = `translate(${px}px, ${py}px)`;
-
-        const ease = (v0 - 2) * t * t * t + (3 - 2 * v0) * t * t + v0 * t;
-        viewer.setAttribute(
-          "camera-orbit",
-          `${startTheta + dist * ease}rad ${startPhi + (fp - startPhi) * ease}rad ${startRadius}m`
-        );
-
-        if (t < 1) {
-          requestAnimationFrame(snapStep);
-        } else {
-          viewer.removeAttribute("auto-rotate");
-          viewer.setAttribute("rotation-per-second", "0deg");
-          viewer.setAttribute("camera-orbit", `${targetTheta}rad ${fp}rad ${startRadius}m`);
-          window.setTimeout(() => setPhase("failure"), 700);
-        }
+        spinTheta += SPIN_RATE * dt;
+        viewer.setAttribute("camera-orbit", `${spinTheta}rad ${spinPhi}rad 110%`);
+        if (elapsed < BOUNCE_DUR) requestAnimationFrame(bounceStep);
+        else snapToFace();
       };
-      requestAnimationFrame(snapStep);
-    }
+      requestAnimationFrame(bounceStep);
+
+      function snapToFace() {
+        const startRadius = viewer.getCameraOrbit().radius;
+        const rawTheta = spinTheta;
+        const [ft, fp] = FACE_POSITIONS[face];
+        const twoPI = Math.PI * 2;
+        const norm = ((rawTheta % twoPI) + twoPI) % twoPI;
+        let diff = ((ft - norm) % twoPI + twoPI) % twoPI;
+        if (diff > Math.PI) diff -= twoPI;
+        const SNAP_DUR = 2500;
+        const targetTheta = rawTheta + diff + 2 * twoPI;
+        const startTheta = rawTheta, startPhi = spinPhi;
+        const dist = targetTheta - startTheta;
+        const v0 = Math.min(SPIN_RATE * (SNAP_DUR / 1000) / dist, 3.0);
+        const snapStart = performance.now();
+        let snapPrevTime = snapStart;
+
+        const snapStep = (now) => {
+          if (skippedRef.current) return;
+          const t = Math.min((now - snapStart) / SNAP_DUR, 1);
+          const dt = Math.min((now - snapPrevTime) / 1000, 0.033);
+          snapPrevTime = now;
+
+          vx *= Math.pow(0.97, dt * 60);
+          vy *= Math.pow(0.97, dt * 60);
+          px += vx * dt;
+          py += vy * dt;
+          let hitWallSnap = false;
+          if (px > MAX_X)  { px = MAX_X;  vx = -Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWallSnap = true; }
+          if (px < -MAX_X) { px = -MAX_X; vx =  Math.abs(vx) * 0.85; vy += (Math.random() - 0.5) * Math.abs(vx) * 0.4; hitWallSnap = true; }
+          if (py > MAX_Y)  { py = MAX_Y;  vy = -Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWallSnap = true; }
+          if (py < -MAX_Y) { py = -MAX_Y; vy =  Math.abs(vy) * 0.85; vx += (Math.random() - 0.5) * Math.abs(vy) * 0.4; hitWallSnap = true; }
+          if (hitWallSnap) playWall();
+          wrapper.style.transform = `translate(${px}px, ${py}px)`;
+
+          const ease = (v0 - 2) * t * t * t + (3 - 2 * v0) * t * t + v0 * t;
+          viewer.setAttribute(
+            "camera-orbit",
+            `${startTheta + dist * ease}rad ${startPhi + (fp - startPhi) * ease}rad ${startRadius}m`
+          );
+
+          if (t < 1) {
+            requestAnimationFrame(snapStep);
+          } else {
+            viewer.setAttribute("camera-orbit", `${targetTheta}rad ${fp}rad ${startRadius}m`);
+            window.setTimeout(() => setPhase("failure"), 700);
+          }
+        };
+        requestAnimationFrame(snapStep);
+      }
+    }, windupMs);
   }, [ready, phase]);
 
   React.useEffect(() => {
@@ -544,16 +568,31 @@ function Intro({ onComplete }) {
       <div
         className={`intro-die${phase !== "silhouette" ? " die-active" : ""}${phase === "fading" || phase === "glass" ? " die-exit" : ""}${phase === "die" && ready ? " die-clickable" : ""}`}
         aria-hidden={phase === "silhouette" ? "true" : undefined}
-        onClick={phase === "die" && ready ? () => { playWoosh2(0.25); roll(); } : undefined}
+        onClick={phase === "die" && ready ? () => { roll(); } : undefined}
       >
-        {phase !== "silhouette" && <DieScene onReady={() => setReady(true)} dieRef={dieRef} />}
-        {phase === "die" && ready && (
-          <button className="roll-button" onClick={(e) => { e.stopPropagation(); playWoosh2(0.25); roll(); }} onMouseEnter={() => playOnce(hoverSrc, 0.35)}>
-            Roll for Perception
+        {phase !== "silhouette" && <DieScene onReady={() => { setReady(true); autoRotateStartRef.current = performance.now(); }} dieRef={dieRef} />}
+        {(phase === "die" || phase === "winding" || phase === "rolling") && ready && (
+          <button
+            className="roll-button"
+            disabled={phase !== "die"}
+            onClick={phase === "die" ? (e) => { e.stopPropagation(); roll(); } : undefined}
+            onMouseEnter={phase === "die" ? () => playOnce(hoverSrc, 0.35) : undefined}
+          >
+            {phase === "die" ? "Roll for Perception" : "Rolling DC 17"}
           </button>
         )}
-        {(phase === "failure" || phase === "fading") && (
-          <p className="failure-label">FAILURE</p>
+        {(phase === "failure" || phase === "fading") && rolledFaceNum !== null && (
+          rolledFaceNum < 17 ? (
+            <p className="failure-label">
+              FAILURE
+              <span className="roll-result">{rolledFaceNum}</span>
+            </p>
+          ) : (
+            <p className="success-label">
+              {rolledFaceNum === 20 ? "Critical Success" : "Success"}
+              <span className="roll-result">{rolledFaceNum}</span>
+            </p>
+          )
         )}
       </div>
       {(phase === "fading" || phase === "glass") && (
