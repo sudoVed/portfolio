@@ -228,16 +228,6 @@ button {
   transform: scale(0.98);
 }
 
-.intro-die .critical {
-  position: absolute;
-  top: calc(50% + 14.6rem);
-  color: var(--gold);
-  font-size: clamp(1.15rem, 2.8vw, 2rem);
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  text-shadow: 0 0 28px rgba(201, 168, 76, 0.46);
-  animation: critical-in 520ms var(--ease-out) both;
-}
 
 .intro-die,
 .intro-die * {
@@ -257,21 +247,13 @@ button {
   pointer-events: none;
 }
 
-@keyframes critical-in {
-  0% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.94);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
 
 .intro-die .failure-label,
 .intro-die .success-label {
   position: absolute;
-  top: calc(50% + 14rem);
+  top: calc(50% + 8.5rem);
+  left: 0;
+  right: 0;
   margin: 0;
   font-family: Cinzel, Georgia, "Times New Roman", serif;
   font-size: clamp(2rem, 5vw, 4rem);
@@ -296,7 +278,7 @@ button {
 }
 
 .intro-die .roll-result {
-  font-size: 0.38em;
+  font-size: 0.65em;
   letter-spacing: 0.14em;
   opacity: 0.68;
 }
@@ -971,21 +953,20 @@ footer {
     top: calc(50% + 8rem);
   }
 
-  .intro-die .critical {
-    top: calc(50% + 9.8rem);
-    letter-spacing: 0.16em;
-  }
-
   .intro-die .failure-label {
-    top: calc(50% + 9rem);
-    font-size: clamp(1.6rem, 5vw, 2.4rem);
-    letter-spacing: 0.28em;
+    top: calc(50% + 7.5rem);
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+    letter-spacing: 0.22em;
   }
 
   .intro-die .success-label {
-    top: calc(50% + 9rem);
-    font-size: clamp(1.6rem, 5vw, 2.4rem);
-    letter-spacing: 0.16em;
+    top: calc(50% + 7.5rem);
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+    letter-spacing: 0.14em;
+  }
+
+  .intro-die .roll-result {
+    font-size: 0.75em;
   }
 
   /* Main content: tighter horizontal padding, smaller headings */

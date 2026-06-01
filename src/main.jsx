@@ -584,13 +584,13 @@ function Intro({ onComplete }) {
         {(phase === "failure" || phase === "fading") && rolledFaceNum !== null && (
           rolledFaceNum < 17 ? (
             <p className="failure-label">
-              FAILURE
               <span className="roll-result">{rolledFaceNum}</span>
+              FAILURE
             </p>
           ) : (
             <p className="success-label">
-              {rolledFaceNum === 20 ? "Critical Success" : "Success"}
               <span className="roll-result">{rolledFaceNum}</span>
+              {rolledFaceNum === 20 ? "Critical Success" : "Success"}
             </p>
           )
         )}

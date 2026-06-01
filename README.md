@@ -20,27 +20,25 @@ A personal portfolio site. Built around a narrative intro sequence and a scroll-
 
 ## Intro Sequence
 
-The site opens with a full-screen intro before the main portfolio is revealed. It plays through three acts automatically.
+The site opens with a full-screen intro before the main portfolio is revealed. It plays through two acts.
 
-### Act 1 — The Quote
+### Act 1 — The Die
 
-A split-screen layout. A silhouette figure sits on one side; on the other, a short italic quote fades in slowly and deliberately:
+A 3D icosahedral die (D20) — dark purple-charcoal body, black face numbers — drops into frame from above, decelerating as it lands. It settles and begins slowly rotating on its own. A prompt appears below it: **Roll for Perception**.
 
-> *"Success and failure share one thing: they change you."*
+Clicking (or pressing Space / Enter) launches the roll. The die briefly winds up in reverse, then launches into a bounce animation — ricocheting off the edges of the viewport at high speed before gradually slowing and snapping to a face. The roll is checked against DC 17.
 
-The atmosphere is dark and quiet. After a moment the layout fades out and the die appears.
+**On failure (roll 2–16):** The rolled number appears above the word **FAILURE** in deep red with a glowing aura. After a short pause the glass act begins.
 
-On screens under 560px the layout stacks vertically — quote on top, silhouette below.
+**On success (roll 17–19):** The rolled number appears above the word **Success** in gold. Background music starts and the intro dissolves into the portfolio.
 
-### Act 2 — The Die
+**On critical success (roll 20):** Same as success, but the label reads **Critical Success**.
 
-A 3D icosahedral die (D20) — dark purple-charcoal body, black face numbers — drops into frame from above, decelerating as it lands. It settles and begins slowly rotating on its own. A prompt appears below it inviting the viewer to roll.
+Face 1 is never rolled by design.
 
-Clicking (or pressing Space / Enter) launches the roll animation. The die bounces across the screen at high speed, ricocheting off the edges of the viewport before gradually slowing and snapping to a face. It always lands on a failure — the die is only ever rolled to faces 1–19 (face 20, the critical success, is excluded by design). The word **FAILURE** materialises beneath it in deep red with a glowing aura.
+### Act 2 — The Glass
 
-### Act 3 — The Glass
-
-The failure fades out and a full-screen video of cracked and shattering glass takes over. A custom hammer cursor replaces the default pointer. Clicking anywhere on the glass triggers the break animation. The crack plays through and the intro dissolves away, revealing the main site beneath it.
+Triggered only on a failed roll. The failure fades out and a full-screen video of cracked and shattering glass takes over. A custom hammer cursor replaces the default pointer. Clicking anywhere on the glass triggers the break animation. The crack plays through and the intro dissolves away, revealing the main site beneath it.
 
 On small screens (≤ 569px) a portrait-cropped version of the glass video plays instead of the landscape one.
 
@@ -99,10 +97,10 @@ The background track pauses automatically when the tab is hidden and resumes whe
 
 | Moment | Sound |
 |---|---|
-| Die drop-in | — |
 | Roll button click | woosh2 (launches bounce) |
 | Die hitting viewport wall | impact tick (plays on every bounce, no cooldown) |
 | FAILURE reveal | low failure tone |
+| Success / Critical Success reveal | success tone + background music starts |
 | Hammer click / glass break | glass shatter + background music starts |
 | Skip intro click | woosh + background music starts |
 | Button / link hover | subtle tick |
@@ -119,7 +117,7 @@ The background track pauses automatically when the tab is hidden and resumes whe
 - **Keyboard** — the die can be rolled with Space or Enter. The skip button is always reachable by tab.
 - **Tap highlight** — the `-webkit-tap-highlight-color` flash is suppressed globally on all interactive elements and throughout the intro sequence for consistent mobile behaviour.
 - **Sidebar nav hover** — each nav dot is a `NavDot` component that drives its own hover state via `pointermove` rather than CSS `:hover`. On each pointer move it briefly clears the element's inline transform, reads the flat `getBoundingClientRect()`, then restores — so the active zone is always the dot's base size, never the scaled-up size. Same technique used by the project panels.
-- **Responsive** — at 860px the multi-column layouts collapse to single-column and the sidebar nav hides. At 560px type scales down, the silhouette layout stacks vertically, and die/roll-button positions are adjusted for the smaller 160px die.
+- **Responsive** — at 860px the multi-column layouts collapse to single-column and the sidebar nav hides. At 560px type scales down and die/roll-button positions are adjusted for the smaller 160px die.
 - **Reduced motion** — if the viewer has reduced motion enabled at the OS level, the intro is skipped entirely, all scroll animations are suppressed, and the 3D background is rendered at 18% opacity (static) instead of animating.
 
 ---
