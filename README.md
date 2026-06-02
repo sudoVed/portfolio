@@ -64,7 +64,7 @@ The opening section of the portfolio. A large typographic mark dominates the lef
 
 ### Skills
 
-A horizontal rule introduces a table of four skill groups — *Systems & Robotics*, *Machine Learning & AI*, *Software & Infrastructure*, and *Tools & Workflow*. Each row slides in from the left as it enters the viewport. Hovering or focusing a row shifts it right, lights its border gold, and washes it with a faint gold gradient from the left edge. No progress bars or ratings — just plain labels.
+A horizontal rule introduces a table of five skill groups — *Robotics & Autonomous Systems*, *AI & Machine Learning*, *Computer Vision*, *Software Development*, and *Tools & Infrastructure*. Each row slides in from the left as it enters the viewport. Hovering or focusing a row shifts it right, lights its border gold, and washes it with a faint gold gradient from the left edge. No progress bars or ratings — just plain labels.
 
 ### Projects
 
@@ -124,4 +124,4 @@ The background track pauses automatically when the tab is hidden and resumes whe
 
 ## Dev Tools
 
-A `FaceMapper` component is compiled into the bundle and gated behind a `MAPPING_MODE` flag at the top of `main.jsx`. Setting it to `true` replaces the app with an interactive die inspector: drag the model to any face, click the corresponding number, and export the `FACE_POSITIONS` camera-orbit map to the clipboard. This is how the ground-truth face orientations used by the roll animation were originally calibrated.
+A `FaceMapper` component is compiled into the bundle and gated behind a `MAPPING_MODE` flag at the top of `src/components/App.jsx`. Setting it to `true` replaces the app with an interactive die inspector: drag the model to any face, click the corresponding number, and export the `FACE_POSITIONS` camera-orbit map to the clipboard. This is how the ground-truth face orientations used by the roll animation were originally calibrated.
