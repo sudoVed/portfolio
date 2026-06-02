@@ -507,7 +507,7 @@ main {
 
 .contact-section h2 {
   margin: 0 0 2rem;
-  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
   line-height: 1;
   letter-spacing: -0.02em;
   text-align: center;
@@ -838,7 +838,8 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  color: var(--muted);
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  color: var(--text);
   transition: color 180ms var(--ease-out), transform 180ms var(--ease-out);
 }
 
