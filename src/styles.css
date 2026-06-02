@@ -298,6 +298,10 @@ button {
   cursor: none;
   animation: failure-fade 2800ms var(--ease-out) both;
   overflow: hidden;
+  border: none;
+  outline: none;
+  appearance: none;
+  touch-action: none;
   -webkit-tap-highlight-color: transparent;
 }
 
