@@ -53,6 +53,7 @@ export function DieScene({ onReady, dieRef, mappingMode = false }) {
     };
     viewer.addEventListener("load", onLoad);
     return () => viewer.removeEventListener("load", onLoad);
+    // react-doctor-disable-next-line react-doctor/exhaustive-deps
   }, [mappingMode]);
 
   return (

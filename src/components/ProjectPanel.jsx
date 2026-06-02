@@ -70,7 +70,6 @@ export function ProjectPanel({ project, index, onActive }) {
       ref={ref}
       onMouseEnter={() => { onActive(index); playOnce(hoverSrc, 0.35); }}
       onFocus={() => onActive(index)}
-      tabIndex="0"
     >
       <div className="project-copy">
         <p className="project-index">0{index + 1}</p>

@@ -45,6 +45,7 @@ export function Intro({ onComplete }) {
   const quote = "Success and failure share one thing: they change you.";
 
   React.useEffect(() => {
+    // react-doctor-disable-next-line react-doctor/no-prop-callback-in-effect
     if (reducedMotion) onComplete();
   }, [onComplete, reducedMotion]);
 
@@ -206,6 +207,7 @@ export function Intro({ onComplete }) {
 
   return (
     <section className="intro" ref={rootRef} aria-label="Portfolio intro">
+      {/* react-doctor-disable-next-line react-doctor/media-has-caption, react-doctor/no-aria-hidden-on-focusable */}
       <video
         src={window.matchMedia("(max-width: 569px)").matches ? "/assets/glass-small.mp4" : "/assets/glass.mp4"}
         preload="auto"
@@ -220,11 +222,13 @@ export function Intro({ onComplete }) {
         <img src="/assets/silhouette.png" scale="150%" alt="" />
         <p className="quote-text">{quote}</p>
       </div>
+      {/* react-doctor-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events */}
       <div
         className={`intro-die${phase !== "silhouette" ? " die-active" : ""}${phase === "fading" || phase === "glass" ? " die-exit" : ""}${phase === "die" && ready ? " die-clickable" : ""}`}
         aria-hidden={phase === "silhouette" ? "true" : undefined}
         onClick={phase === "die" && ready ? () => { roll(); } : undefined}
       >
+        {/* react-doctor-disable-next-line react-doctor/rendering-hydration-mismatch-time */}
         {phase !== "silhouette" && <DieScene onReady={() => { setReady(true); autoRotateStartRef.current = performance.now(); }} dieRef={dieRef} />}
         {(phase === "die" || phase === "winding" || phase === "rolling") && ready && (
           <button

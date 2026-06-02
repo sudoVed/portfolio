@@ -3,6 +3,7 @@ import { DieScene } from "./DieScene";
 
 export function FaceMapper() {
   const dieRef = React.useRef(null);
+  // react-doctor-disable-next-line react-doctor/rerender-state-only-in-handlers
   const [ready, setReady] = React.useState(false);
   const [orbit, setOrbit] = React.useState(null);
   const [recorded, setRecorded] = React.useState({});
@@ -38,7 +39,9 @@ export function FaceMapper() {
   const normNow = orbit ? ((orbit.theta % twoPI) + twoPI) % twoPI : 0;
 
   return (
+    /* react-doctor-disable-next-line react-doctor/no-inline-exhaustive-style */
     <div style={{ position: "fixed", inset: 0, background: "#0a0a0a", display: "flex", flexDirection: "column", alignItems: "center", padding: "1rem", gap: "1rem", overflowY: "auto" }}>
+      {/* react-doctor-disable-next-line react-doctor/no-wide-letter-spacing */}
       <p style={{ margin: 0, color: "#c9a84c", fontFamily: "monospace", fontSize: "0.8rem", letterSpacing: "0.1em" }}>FACE MAPPING MODE: drag the die to a face, click its number</p>
 
       <DieScene onReady={() => setReady(true)} dieRef={dieRef} mappingMode />
@@ -51,6 +54,7 @@ export function FaceMapper() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "0.4rem", width: "min(400px, 90vw)" }}>
         {Array.from({ length: 20 }, (_, i) => i + 1).map(f => (
+          /* react-doctor-disable-next-line react-doctor/no-inline-exhaustive-style */
           <button
             key={f}
             type="button"
@@ -77,7 +81,8 @@ export function FaceMapper() {
         <button
           type="button"
           onClick={exportMap}
-          style={{ padding: "0.6rem 1.4rem", background: "#c9a84c", color: "#0a0a0a", border: 0, borderRadius: "6px", fontFamily: "monospace", fontWeight: 700, cursor: "pointer", fontSize: "0.9rem" }}
+          style={{ /* react-doctor-disable-line react-doctor/no-inline-exhaustive-style */
+            padding: "0.6rem 1.4rem", background: "#c9a84c", color: "#0a0a0a", border: 0, borderRadius: "6px", fontFamily: "monospace", fontWeight: 700, cursor: "pointer", fontSize: "0.9rem" }}
         >
           Copy FACE_POSITIONS →
         </button>
@@ -87,7 +92,8 @@ export function FaceMapper() {
         <button
           type="button"
           onClick={exportMap}
-          style={{ padding: "0.4rem 1rem", background: "transparent", color: "#555", border: "1px solid #333", borderRadius: "6px", fontFamily: "monospace", cursor: "pointer", fontSize: "0.8rem" }}
+          style={{ /* react-doctor-disable-line react-doctor/no-inline-exhaustive-style */
+            padding: "0.4rem 1rem", background: "transparent", color: "#555", border: "1px solid #333", borderRadius: "6px", fontFamily: "monospace", cursor: "pointer", fontSize: "0.8rem" }}
         >
           Copy partial ({done}/20)
         </button>

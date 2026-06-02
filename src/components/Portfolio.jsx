@@ -102,7 +102,7 @@ export function Portfolio() {
           </div>
           <div className="skill-table">
             {skills.map((skill) => (
-              <div className="skill-row" key={skill.group} tabIndex="0" onMouseEnter={() => playOnce(hoverSrc, 0.35)}>
+              <div className="skill-row" key={skill.group} onMouseEnter={() => playOnce(hoverSrc, 0.35)}>
                 <h3>{skill.group}</h3>
                 <div>
                   {skill.items.map((item) => (

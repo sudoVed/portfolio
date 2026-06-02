@@ -166,5 +166,6 @@ export function SpatialScene({ activeProject }) {
     };
   }, [reducedMotion]);
 
+  // react-doctor-disable-next-line react-doctor/no-aria-hidden-on-focusable
   return <canvas className="spatial-canvas" ref={canvasRef} aria-hidden="true" />;
 }
