@@ -9,6 +9,7 @@ vite.err.log
 vite.out.log
 
 # claude code
+.agents/
 .claude/
 AGENTS.md
 CLAUDE.md

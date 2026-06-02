@@ -69,20 +69,55 @@ window.addEventListener("mousemove", (e) => { mousePos.x = e.clientX; mousePos.y
 
 const skills = [
   {
-    group: "Systems & Robotics",
-    items: ["ROS2", "Autonomous Navigation", "Sensor Fusion", "Path Planning", "Embedded Systems"],
+    group: "Robotics & Autonomous Systems",
+    items: [
+      "ROS2",
+      "Autonomous Navigation",
+      "SLAM",
+      "Path Planning",
+      "Sensor Fusion",
+      "Embedded Systems",
+    ],
   },
   {
-    group: "Machine Learning & AI",
-    items: ["Reinforcement Learning", "Deep Learning", "PyTorch", "Neural Networks", "Reward Modeling"],
+    group: "AI & Machine Learning",
+    items: [
+      "Reinforcement Learning",
+      "Deep Learning",
+      "PyTorch",
+      "Neural Networks",
+      "Machine Learning",
+      "Reward Modeling",
+    ],
   },
   {
-    group: "Software & Infrastructure",
-    items: ["Full-Stack Development", "WebSockets", "Real-Time Systems", "Python", "C++", "JavaScript"],
+    group: "Computer Vision",
+    items: [
+      "OpenCV",
+      "Image Processing",
+      "Object Detection",
+      "Feature Extraction",
+    ],
   },
   {
-    group: "Tools & Workflow",
-    items: ["Git", "Linux", "Docker", "VS Code"],
+    group: "Software Development",
+    items: [
+      "Python",
+      "C++",
+      "React",
+      "JavaScript",
+      "WebSockets",
+      "Database Management",
+    ],
+  },
+  {
+    group: "Tools & Infrastructure",
+    items: [
+      "Git",
+      "Linux",
+      "Docker",
+      "VS Code",
+    ],
   },
 ];
 
@@ -1015,8 +1050,8 @@ function Portfolio() {
 
         <section className="skills-section" id="skills" aria-labelledby="skills-title">
           <div className="section-heading">
-            <h2 id="skills-title">Capability map</h2>
-            <p>Stat-block structure without fake percentages. The useful signal is what I can work with.</p>
+            <h2 id="skills-title">Capability Map</h2>
+            <p>No arbitrary percentages—just the technologies, frameworks, and engineering domains I use to build real projects.</p>
           </div>
           <div className="skill-table">
             {skills.map((skill) => (
