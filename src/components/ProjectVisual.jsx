@@ -1,17 +1,16 @@
 import React from "react";
 
-const KNOWN_VISUALS = new Set(["robot", "chain", "chat"]);
+const IMAGE_MAP = {
+  robot: "/assets/proj1.png",
+  chain: "/assets/proj2.png",
+  chat: "/assets/proj3.png",
+};
 
 export function ProjectVisual({ type }) {
-  const resolved = KNOWN_VISUALS.has(type) ? type : "default";
+  const src = IMAGE_MAP[type] ?? "/assets/projdefault.png";
   return (
-    <div className={`project-visual project-visual-${resolved}`} aria-hidden="true">
-      <span />
-      <span />
-      <span />
-      <span />
-      <span />
-      <span />
+    <div className="project-visual" aria-hidden="true">
+      <img src={src} alt="" />
     </div>
   );
 }

@@ -74,7 +74,7 @@ export function ProjectPanel({ project, index, onActive }) {
       <div className="project-copy">
         <p className="project-index">0{index + 1}</p>
         <h3>{project.title}</h3>
-        <p className="project-descriptor">{project.descriptor}</p>
+        {project.descriptor && <p className="project-descriptor">{project.descriptor}</p>}
         <p>{project.body}</p>
         <div className="tag-row">
           {project.tags.map((tag) => (

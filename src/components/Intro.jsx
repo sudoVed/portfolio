@@ -75,7 +75,6 @@ export function Intro({ onComplete }) {
     if (autoRotateStartRef.current !== null) {
       const elapsed = (performance.now() - autoRotateStartRef.current) / 1000;
       offby = (elapsed * 40) % 360;
-      console.log(`Auto-rotate: ${elapsed.toFixed(3)}s → ${(elapsed * 40).toFixed(1)}° spun`);
     }
     const face = Math.ceil(Math.random() * 19) + 1;        //only 2 - 20
     setRolledFaceNum(face);

@@ -117,7 +117,7 @@ export function Portfolio() {
         <section className="projects-section" id="projects" aria-labelledby="projects-title">
           <div className="section-heading">
             <h2 id="projects-title">Work panels</h2>
-            <p>Three systems, each represented with truthful visuals instead of invented screenshots.</p>
+            <p>Three of my best projects. These helped me to learn their respective skills and taught me to not leave tasks unfinished.</p>
           </div>
           <div className="project-stack">
             {projects.map((project, index) => (
