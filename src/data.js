@@ -54,6 +54,15 @@ export const skills = [
 
 export const projects = [
   {
+    title: "STRIDE - RL Quadruped Locomotion",
+    descriptor: "",
+    body:
+      "A reinforcement learning-based locomotion system for the Unitree Go2 quadruped in MuJoCo using PPO. Combines PMTG-based gait generation, residual control, and reward shaping to achieve stable trotting and disturbance recovery.",
+    tags: ["Python", "PyTorch", "MuJoCo", "PPO", "Reinforcement Learning"],
+    href: "https://github.com/sudoVed/stride-v1",
+    visual: "stride",
+  },
+  {
     title: "Autonomous Mobile Robot",
     descriptor: "",
     body:
@@ -80,4 +89,5 @@ export const projects = [
     href: "",
     visual: "chat",
   },
+
 ];
