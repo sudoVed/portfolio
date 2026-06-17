@@ -68,7 +68,7 @@ A horizontal rule introduces a table of five skill groups — *Robotics & Autono
 
 ### Projects
 
-Three tall panels stacked vertically. Each panel has a copy column on the left and a project screenshot on the right. The screenshot is contained at its natural aspect ratio, centered in a grid-patterned well — it scales down to fit the panel at any viewport width without ever stretching.
+Project panels stacked vertically. Each panel has a copy column on the left and a project screenshot on the right. The screenshot is contained at its natural aspect ratio, centered in a grid-patterned well — it scales down to fit the panel at any viewport width without ever stretching.
 
 Every panel tilts in 3D toward the cursor while the pointer is inside it (desktop/fine-pointer devices only), with a radial gold highlight that tracks cursor position. The tilt reads the flat layout bounds rather than the bent element bounds, so the hover zone stays stable. Panels without a linked repository have their link icon dimmed.
 
