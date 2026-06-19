@@ -83,10 +83,9 @@ export function Portfolio() {
           <div className="hero-inner">
             <div className="hero-copy">
               <h1 className="hero-mark">VED</h1>
-              <p className="discipline">Full-Stack Developer / Robotics / Machine Learning</p>
+              <p className="discipline">AI Systems // Robotics // Reinforcement Learning</p>
               <p className="about-copy">
-                I consider myself someone who is driven by curiosity and desire. I enjoy trying new things, building new
-                things, fixing small inconveniences, and finding the small fun things in life.
+                Driven by curiosity and a desire to build, I explore the intersection of AI, robotics, and software. My work focuses on creating intelligent systems through deep learning, reinforcement learning, simulation, and control.
               </p>
             </div>
             <figure className="profile-frame">
