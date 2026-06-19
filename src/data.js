@@ -57,7 +57,7 @@ export const projects = [
     title: "STRIDE - RL Quadruped Locomotion",
     descriptor: "",
     body:
-      "A reinforcement learning-based locomotion system for the Unitree Go2 quadruped in MuJoCo using PPO. Combines PMTG-based gait generation, residual control, and reward shaping to achieve stable trotting and disturbance recovery.",
+      "Trained a 15 kg Unitree Go2 quadruped to locomote from scratch with deep reinforcement learning (PPO in MuJoCo), developing a single neural locomotion policy for gait generation and disturbance recovery. The policy recovers from impulsive, unanticipated mid-gait pushes across 8 directions — 100% recovery at 90 N (~0.6× body weight) on flat ground, and 100% / 91.7% recovery at 75 N / 90 N on procedurally generated uneven terrain (0.15 m elevation).",
     tags: ["Python", "PyTorch", "MuJoCo", "PPO", "Reinforcement Learning"],
     href: "https://github.com/sudoVed/stride-v1",
     visual: "stride",
