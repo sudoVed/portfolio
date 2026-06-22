@@ -14,20 +14,20 @@ export const skills = [
     group: "AI & Machine Learning",
     items: [
       "Reinforcement Learning",
-      "Deep Learning",
       "PyTorch",
       "Neural Networks",
       "Machine Learning",
       "Reward Modeling",
+      "Self-Play",
     ],
   },
   {
-    group: "Computer Vision",
+    group: "Systems & Performance",
     items: [
-      "OpenCV",
-      "Image Processing",
-      "Object Detection",
-      "Feature Extraction",
+      "WebAssembly",
+      "SIMD / Vectorization",
+      "Model Quantization",
+      "Multithreading",
     ],
   },
   {
@@ -63,6 +63,25 @@ export const projects = [
     visual: "stride",
   },
   {
+    title: "Chess Engine - Browser NNUE Engine",
+    descriptor: "",
+    body:
+      "A complete chess engine written from scratch in C++ and compiled to WebAssembly, running entirely in the browser with no backend, Stockfish, or chess libraries. It pairs an alpha-beta search (transposition tables, move ordering, quiescence, null-move pruning, late-move reductions) with a HalfKP NNUE evaluator trained from scratch in PyTorch. Incremental accumulator updates, integer quantization, and WASM SIMD cut per-evaluation cost ~3-4x, verified bit-exact against full rebuilds — a depth-10 NNUE search runs in ~330 ms.",
+    tags: ["C++", "WebAssembly", "SIMD", "PyTorch", "NNUE"],
+    href: "https://github.com/sudoVed/chees",
+    href2: "https://chess.vhades.dpdns.org",
+    visual: "chess",
+  },
+  {
+    title: "Chain Reaction with Reinforcement Learning",
+    descriptor: "",
+    body:
+      "A reinforcement learning agent trained to play Chain Reaction from scratch using self-play and reward shaping. A fully-convolutional DQN trained over ~10,000 episodes across a four-stage curriculum, with a self-simulation risk filter that evaluates the opponent's best reply before committing to a move. The final agent reaches a 95% win rate vs random, 81.5% vs defensive, and 57% vs greedy opponents.",
+    tags: ["Python", "PyTorch", "Self-Play", "Reward Modeling"],
+    href: "https://github.com/sudoVed/chain-reaction",
+    visual: "chain",
+  },
+  {
     title: "Autonomous Mobile Robot",
     descriptor: "",
     body:
@@ -70,15 +89,6 @@ export const projects = [
     tags: ["ROS2", "LIDAR", "Sensor Fusion", "Path Planning"],
     href: "https://github.com/sudoVed/autonomous-mobile-robot",
     visual: "robot",
-  },
-  {
-    title: "Chain Reaction with Reinforcement Learning",
-    descriptor: "",
-    body:
-      "A reinforcement learning agent trained to play Chain Reaction from scratch using self-play and reward shaping. The project explores emergent strategy in adversarial, discrete-action environments with Python and PyTorch. Final model scores displayed in GitHub repository.",
-    tags: ["Python", "PyTorch", "Self-Play", "Reward Modeling"],
-    href: "https://github.com/sudoVed/chain-reaction",
-    visual: "chain",
   },
   {
     title: "Chat Application",

@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { GithubLogo, Globe } from "@phosphor-icons/react";
 import { playOnce, playWoosh, hoverSrc } from "../audio";
 import { mousePos } from "../mousePos";
 import { ProjectVisual } from "./ProjectVisual";
@@ -84,15 +84,18 @@ export function ProjectPanel({ project, index, onActive }) {
       </div>
       <div className="project-visual-wrap">
         <ProjectVisual type={project.visual} />
-        {project.href ? (
-          <a className="project-link" href={project.href} target="_blank" rel="noreferrer" aria-label={`${project.title} repository`} onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
-            <ArrowUpRight weight="bold" />
-          </a>
-        ) : (
-          <span className="project-link project-link-disabled" aria-label="Project link coming later">
-            <ArrowUpRight weight="bold" />
-          </span>
-        )}
+        <div className="project-links">
+          {project.href && (
+            <a className="project-link" href={project.href} target="_blank" rel="noreferrer" aria-label={`${project.title} repository`} onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+              <GithubLogo weight="bold" />
+            </a>
+          )}
+          {project.href2 && (
+            <a className="project-link" href={project.href2} target="_blank" rel="noreferrer" aria-label={`${project.title} live demo`} onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+              <Globe weight="bold" />
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );

@@ -643,10 +643,15 @@ main {
   margin-top: 1.35rem;
 }
 
-.project-link {
+.project-links {
   position: absolute;
   top: 0.9rem;
   right: 0.9rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.project-link {
   display: grid;
   width: 2.7rem;
   height: 2.7rem;
@@ -663,10 +668,6 @@ main {
   color: var(--gold);
   border-color: rgba(201, 168, 76, 0.75);
   transform: translate(2px, -2px);
-}
-
-.project-link-disabled {
-  opacity: 0.4;
 }
 
 .project-visual-wrap {

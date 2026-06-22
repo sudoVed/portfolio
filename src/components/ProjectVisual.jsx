@@ -5,6 +5,7 @@ const IMAGE_MAP = {
   chain: "/assets/proj2.png",
   chat: "/assets/proj3.png",
   stride: "/assets/proj4.png",
+  chess: "/assets/proj5.png",
 };
 
 export function ProjectVisual({ type }) {
