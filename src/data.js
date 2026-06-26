@@ -79,6 +79,7 @@ export const projects = [
       "A reinforcement learning agent trained to play Chain Reaction from scratch using self-play and reward shaping. A fully-convolutional DQN trained over ~10,000 episodes across a four-stage curriculum, with a self-simulation risk filter that evaluates the opponent's best reply before committing to a move. The final agent reaches a 95% win rate vs random, 81.5% vs defensive, and 57% vs greedy opponents.",
     tags: ["Python", "PyTorch", "Self-Play", "Reward Modeling"],
     href: "https://github.com/sudoVed/chain-reaction",
+    href2: "https://chain.vhades.dpdns.org",
     visual: "chain",
   },
   {
