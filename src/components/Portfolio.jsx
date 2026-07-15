@@ -85,7 +85,7 @@ export function Portfolio() {
               <h1 className="hero-mark">VED</h1>
               <p className="discipline">AI Systems // Robotics // Reinforcement Learning</p>
               <p className="about-copy">
-                Driven by curiosity and a desire to build, I explore the intersection of AI, robotics, and software. My work focuses on creating intelligent systems through deep learning, reinforcement learning, simulation, and control.
+                I try to manage the traffic lights at the chaotic intersection of AI, robotics, and software—where deep learning, reinforcement learning, simulation, and control are all convinced they have the right of way.
               </p>
             </div>
             <figure className="profile-frame">
@@ -97,7 +97,7 @@ export function Portfolio() {
         <section className="skills-section" id="skills" aria-labelledby="skills-title">
           <div className="section-heading">
             <h2 id="skills-title">Capability Map</h2>
-            <p>No arbitrary percentages, just the technologies, frameworks, and engineering domains I use to build real projects.</p>
+            <p>A curated stack of the technologies, frameworks, and engineering domains I use to build real projects.</p>
           </div>
           <div className="skill-table">
             {skills.map((skill) => (
