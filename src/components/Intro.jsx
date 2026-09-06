@@ -51,7 +51,7 @@ export function Intro({ onComplete }) {
 
   React.useEffect(() => {
     if (phase !== "failure") return;
-    if (rolledFaceNum < 17) {
+    if (rolledFaceNum < 11) {
       playOnce(failSrc, 0.4);
       const t = window.setTimeout(() => {
         setPhase("fading");
@@ -237,11 +237,11 @@ export function Intro({ onComplete }) {
             onClick={phase === "die" ? (e) => { e.stopPropagation(); roll(); } : undefined}
             onMouseEnter={phase === "die" ? () => playOnce(hoverSrc, 0.35) : undefined}
           >
-            {phase === "die" ? "Roll for Perception" : "Rolling DC 17"}
+            {phase === "die" ? "Roll for Perception" : "Rolling DC 11"}
           </button>
         )}
         {(phase === "failure" || phase === "fading") && rolledFaceNum !== null && (
-          rolledFaceNum < 17 ? (
+          rolledFaceNum < 11 ? (
             <p className="failure-label">
               <span className="roll-result">{rolledFaceNum}</span>
               FAILURE
