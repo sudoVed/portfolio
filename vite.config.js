@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { fileURLToPath } from "node:url";
 
 export default defineConfig(({ command }) => ({
   base: command === "build" ? "./" : "/",
@@ -19,6 +20,10 @@ export default defineConfig(({ command }) => ({
   build: {
     chunkSizeWarningLimit: 700,
     rollupOptions: {
+      input: {
+        portfolio: fileURLToPath(new URL("./index.html", import.meta.url)),
+        connect: fileURLToPath(new URL("./connect.html", import.meta.url)),
+      },
       output: {
         manualChunks: {
           three: ["three", "three/examples/jsm/loaders/GLTFLoader.js"],

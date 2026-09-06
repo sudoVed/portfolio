@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Somani;Vedansh;;;
+FN:Vedansh Somani
+EMAIL;TYPE=INTERNET:vedansh.somani.study@gmail.com
+URL:https://vhades.dpdns.org/
+X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/vedansh-somani/
+X-SOCIALPROFILE;TYPE=github:https://github.com/sudoVed
+NOTE:LinkedIn: https://www.linkedin.com/in/vedansh-somani/\nGitHub:
+  https://github.com/sudoVed
+END:VCARD

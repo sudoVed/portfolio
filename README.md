@@ -2,6 +2,61 @@
 
 A personal portfolio site. Built around a narrative intro sequence and a scroll-driven 3D background, with distinct visual character in every section.
 
+## Run locally
+
+```sh
+npm ci
+npm run dev
+```
+
+The portfolio is at `/`; the standalone contact card is at `/connect` on the same server. To check the production output:
+
+```sh
+npm run build
+npm run preview
+```
+
+## Source layout
+
+| Path | Purpose |
+|---|---|
+| `src/components/Portfolio.jsx` | Main portfolio sections |
+| `src/components/NavDot.jsx` | Four section-scroll buttons with whoosh feedback; no URL hashes |
+| `src/components/voxel-connect/` | The main page's gold V ↔ QR section: React controls, Three.js renderer, voxel mapping, styles, QR data, and geometry checks |
+| `connect.html` | The separate `/connect` contact page; no JavaScript required |
+| `connect/connect.css` | Contact page styles |
+| `public/assets/qr.svg`, `qr.png` | Supplied QR artwork encoding `https://vhades.dpdns.org/connect` |
+| `public/assets/vedansh-somani.vcf` | Downloadable contact card |
+| `public/assets/resume.pdf` | Resume downloaded from the contact page |
+| `dist/` | Generated deployment output, excluded from Git |
+
+`src/components/voxel-connect/` is source code for one portfolio section, not a website route. It is bundled by Vite; visitors do not navigate to that directory. Implementation notes and checks are in [its README](src/components/voxel-connect/README.md).
+
+## Deploy to Cloudflare
+
+### Cloudflare Pages
+
+Use the existing Pages project connected to this repository:
+
+| Setting | Value |
+|---|---|
+| Root directory | Repository root |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Production branch | The branch configured in your Pages project |
+
+Commit the new source files, contact page, QR assets, contact card, and any intended resume update along with the existing file changes. Push to the configured production branch; with automatic deployments enabled, Pages builds and publishes both pages together. If using Direct Upload instead, build locally and upload the complete `dist` directory to the existing project. Do not upload only `index.html` or the raw `src` directory.
+
+The build emits `dist/index.html` and `dist/connect.html`. Cloudflare Pages automatically serves the latter at `/connect`; no separate project, subdomain, DNS record, or custom rewrite is needed with the default Pages setup. This is Cloudflare's documented [HTML route matching](https://developers.cloudflare.com/pages/configuration/serving-pages/). Build settings are documented [here](https://developers.cloudflare.com/pages/configuration/build-configuration/).
+
+The QR click target is the root-relative path `/connect`. On localhost it opens the local contact page; on `https://vhades.dpdns.org` it opens `https://vhades.dpdns.org/connect`. The QR image itself always encodes that live URL, including when scanned from a local preview.
+
+After deployment, open `/connect` directly and refresh it, check Save Contact and Resume downloads, and check that the fourth dot scrolls to the V/QR section while the URL stays on `/`. Custom Pages Functions or redirect rules that intercept `/connect` must allow the contact asset through. This repository does not contain the account's dashboard settings, so those settings have not been inspected.
+
+### Cloudflare Workers with static assets
+
+If the existing project is a Worker rather than Pages, deploy `dist` as its static asset directory and retain the default `assets.html_handling: "auto-trailing-slash"`, which serves `connect.html` at `/connect`. A custom Worker handling requests before static assets must pass `/connect` through to the asset binding. See [Workers HTML handling](https://developers.cloudflare.com/workers/static-assets/routing/advanced/html-handling/). No Worker configuration is added here because the existing hosting setup is managed outside this repo.
+
 ---
 
 ## Stack
@@ -74,14 +129,22 @@ Every panel tilts in 3D toward the cursor while the pointer is inside it (deskto
 
 ### Contact
 
-A full-viewport closing section, vertically and horizontally centred. The name renders in a gold gradient above a thin horizontal rule. Directly below the rule, four icon-labelled links sit in a single horizontal row that wraps on small screens. Links lift slightly on hover and turn gold.
+A full-viewport closing section with a rotating gold voxel V. CONNECT rearranges the same cubes into the supplied QR; BACK reverses the transformation. The settled QR is stable for scanning and links to `/connect` when tapped. The canvas is transparent so it blends into the section's dark background without a tinted rectangle. Rendering pauses off-screen, and reduced motion skips the movement.
 
-| Link | Action |
+### Standalone contact page
+
+`/connect` is a separate, mobile-first HTML page with no portfolio scripts, intro, audio, or WebGL. It contains the identity and six immediate actions:
+
+| Action | Destination |
 |---|---|
-| Resume | PDF download |
-| GitHub | GitHub hyperlink |
-| LinkedIn | LinkedIn hyperlink |
-| Email | Email Address |
+| Save Contact | vCard with name, email, portfolio, LinkedIn, and GitHub |
+| LinkedIn | Existing LinkedIn profile, in a new tab |
+| GitHub | Existing GitHub profile, in a new tab |
+| Resume | Download the existing PDF |
+| Portfolio | Main homepage |
+| Email | Existing mailto address |
+
+Vite builds both `index.html` and `connect.html`. Both the development server and production preview resolve `/connect`; Cloudflare deployment is covered above. Contact-card details are in `public/assets/vedansh-somani.vcf`; the resume remains `public/assets/resume.pdf`. Visitors can open the downloaded `.vcf` in a contacts app to save the name, email, portfolio, and social links. Social links are also stored in the card's notes for apps that do not display social-profile fields.
 
 ---
 
@@ -109,10 +172,10 @@ The background track pauses automatically when the tab is hidden and resumes whe
 ## Interaction Details
 
 - **Cursor** — the cursor is always the default arrow. The only exception is during the glass act, where a hammer emoji replaces it entirely.
-- **Scroll** — the 3D background responds continuously to scroll position. All content sections animate in on first entry via scroll triggers: the hero blurs in, section headings translate up, skill rows stagger in horizontally, project panels blur in, the contact section fades. Each of the four main sections (skills, projects, contact) occupies at least one full viewport height, so the page feels paginated when scrolling.
+- **Scroll** — the 3D background responds continuously to scroll position. The hero blurs in, section headings translate up, skill rows stagger in horizontally, and project panels blur in. The closing voxel section starts rendering when visible. Each main section occupies at least one full viewport height.
 - **Keyboard** — the die can be rolled with Space or Enter. The skip button is always reachable by tab.
 - **Tap highlight** — the `-webkit-tap-highlight-color` flash is suppressed globally on all interactive elements and throughout the intro sequence for consistent mobile behaviour.
-- **Sidebar nav** — four dots fixed to the right edge, one per section. Each is a plain `<a href="#section-id">` anchor; the browser's native smooth scroll handles the rest. Dots highlight on hover only — there is no scroll-position-based active state. The `NavDot` component drives hover via `pointermove` rather than CSS `:hover`, briefly clearing its transform to read flat layout bounds so the hit zone stays the dot's base size regardless of scale. Same technique used by the project panels.
+- **Sidebar nav** — four buttons fixed to the right edge. They scroll to About, Skills, Projects, and the closing V/QR section without adding `#projects` or other fragments to the URL or adding browser-history entries. A pre-existing fragment is removed when a dot is used; the pathname and query parameters are preserved. Scrolling respects reduced motion. Tapping the assembled QR opens `/connect`. Dots retain their hover highlight, keyboard focus, and whoosh sound. The `NavDot` component drives hover via `pointermove`, briefly clearing its transform to read flat layout bounds so the hit zone stays the dot's base size regardless of scale.
 - **Responsive** — at 860px the multi-column layouts collapse to single-column and the sidebar nav hides. At 560px type scales down and die/roll-button positions are adjusted for the smaller 160px die.
 - **Reduced motion** — if the viewer has reduced motion enabled at the OS level, the intro is skipped entirely, all scroll animations are suppressed, and the 3D background is rendered at 18% opacity (static) instead of animating.
 

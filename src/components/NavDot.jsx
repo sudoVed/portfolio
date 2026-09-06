@@ -2,7 +2,7 @@ import React from "react";
 import { playOnce, playWoosh, hoverSrc } from "../audio";
 import { mousePos } from "../mousePos";
 
-export function NavDot({ label, href }) {
+export function NavDot({ label, targetId }) {
   const ref = React.useRef(null);
 
   React.useEffect(() => {
@@ -26,9 +26,20 @@ export function NavDot({ label, href }) {
     return () => window.removeEventListener("pointermove", update);
   }, []);
 
+  function scrollToSection() {
+    playWoosh(0.75);
+    if (window.location.hash) {
+      window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+    }
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
+  }
+
   return (
-    <a ref={ref} href={href} onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
+    <button type="button" ref={ref} aria-label={label} aria-controls={targetId} onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={scrollToSection}>
       {label}
-    </a>
+    </button>
   );
 }

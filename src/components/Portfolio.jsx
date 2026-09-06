@@ -1,12 +1,12 @@
 import React from "react";
-import { DownloadSimple, EnvelopeSimple, GithubLogo, LinkedinLogo } from "@phosphor-icons/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { playOnce, playWoosh, hoverSrc } from "../audio";
+import { playOnce, hoverSrc } from "../audio";
 import { skills, projects } from "../data";
 import { SpatialScene } from "./SpatialScene";
 import { NavDot } from "./NavDot";
 import { ProjectPanel } from "./ProjectPanel";
+import { VoxelConnect } from "./voxel-connect/VoxelConnect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,12 +50,6 @@ export function Portfolio() {
         });
       });
 
-      gsap.from(".contact-section", {
-        opacity: 0,
-        duration: 0.6, ease: "power2.out",
-        scrollTrigger: { trigger: ".contact-section", start: "top 80%" },
-      });
-
       gsap.utils.toArray(".project-panel").forEach((panel, index) => {
         ScrollTrigger.create({
           trigger: panel,
@@ -75,7 +69,7 @@ export function Portfolio() {
 <SpatialScene activeProject={activeProject} />
       <nav className="side-nav" aria-label="Sections">
         {["About", "Skills", "Projects", "Contact"].map((item) => (
-          <NavDot key={item} label={item} href={`#${item.toLowerCase()}`} />
+          <NavDot key={item} label={item} targetId={item === "Contact" ? "voxel-connect" : item.toLowerCase()} />
         ))}
       </nav>
       <main id="content">
@@ -125,23 +119,7 @@ export function Portfolio() {
           </div>
         </section>
 
-        <section className="contact-section" id="contact" aria-labelledby="contact-title">
-          <h2 id="contact-title" className="name-gradient">Vedansh Somani</h2>
-          <div className="contact-links">
-            <a href="/assets/resume.pdf" download="Vedansh_Somani_Resume.pdf" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
-              <DownloadSimple weight="bold" /> Resume
-            </a>
-            <a href="https://github.com/sudoVed" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
-              <GithubLogo weight="bold" /> GitHub
-            </a>
-            <a href="https://www.linkedin.com/in/vedansh-somani/" target="_blank" rel="noreferrer" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
-              <LinkedinLogo weight="bold" /> LinkedIn
-            </a>
-            <a href="mailto:vedansh.somani.study@gmail.com" onMouseEnter={() => playOnce(hoverSrc, 0.35)} onClick={() => playWoosh(0.75)}>
-              <EnvelopeSimple weight="bold" /> Email
-            </a>
-          </div>
-        </section>
+        <VoxelConnect />
       </main>
     </div>
   );

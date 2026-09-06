@@ -1,0 +1,72 @@
+.voxel-connect {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  background: #0d0d0d;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.voxel-connect-heading { text-align: center; }
+.voxel-connect-heading h2 {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  letter-spacing: -0.02em;
+}
+.voxel-connect-stage {
+  position: relative;
+  width: min(90vw, 62svh, 620px);
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+.voxel-connect-stage canvas { display: block; width: 100%; height: 100%; }
+.voxel-connect-qr-link {
+  position: absolute;
+  /* 29 modules plus a four-module quiet zone, in the 7.2-unit view. */
+  inset: 8.889%;
+  cursor: pointer;
+}
+.voxel-connect-fallback {
+  position: absolute;
+  inset: 8.889%;
+  padding: 5.405%;
+  background: #0d0d0d;
+}
+.voxel-connect-fallback img { display: block; width: 100%; height: 100%; }
+.voxel-connect-controls { text-align: center; }
+.voxel-connect-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  min-width: 158px;
+  min-height: 48px;
+  padding: 0.85rem 1.15rem;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.voxel-connect-controls button:hover { background: rgba(201, 168, 76, 0.08); }
+.voxel-connect-controls button:disabled { opacity: 0.4; cursor: wait; }
+.voxel-connect-controls p {
+  margin: 1.2rem 0 0;
+  min-height: 1.5em;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.025em;
+}
+
+@media (max-height: 540px) and (orientation: landscape) {
+  .voxel-connect { padding: 2rem 1rem; }
+  .voxel-connect-stage { width: min(55vw, 72svh); }
+}
