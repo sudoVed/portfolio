@@ -23,10 +23,8 @@ npm run preview
 | `src/components/Portfolio.jsx` | Main portfolio sections |
 | `src/components/NavDot.jsx` | Four section-scroll buttons with whoosh feedback; no URL hashes |
 | `src/components/voxel-connect/` | The main page's gold V ↔ QR section: React controls, Three.js renderer, voxel mapping, styles, QR data, and geometry checks |
-| `connect.html` | The separate `/connect` contact page; no JavaScript required |
-| `connect/connect.css` | Contact page styles |
+| `connect.html` | The separate `/connect` contact page, including its styles; no JavaScript required |
 | `public/assets/qr.svg`, `qr.png` | Supplied QR artwork encoding `https://vhades.dpdns.org/connect` |
-| `public/assets/vedansh-somani.vcf` | Downloadable contact card |
 | `public/assets/resume.pdf` | Resume downloaded from the contact page |
 | `dist/` | Generated deployment output, excluded from Git |
 | `wrangler.jsonc` | Cloudflare Worker `portfolio`, serving static files from `dist` |
@@ -75,13 +73,13 @@ Use the existing Pages project connected to this repository:
 | Build output directory | `dist` |
 | Production branch | The branch configured in your Pages project |
 
-Commit the new source files, contact page, QR assets, contact card, and any intended resume update along with the existing file changes. Push to the configured production branch; with automatic deployments enabled, Pages builds and publishes both pages together. If using Direct Upload instead, build locally and upload the complete `dist` directory to the existing project. Do not upload only `index.html` or the raw `src` directory.
+Commit the new source files, contact page, QR assets, and any intended resume update along with the existing file changes. Push to the configured production branch; with automatic deployments enabled, Pages builds and publishes both pages together. If using Direct Upload instead, build locally and upload the complete `dist` directory to the existing project. Do not upload only `index.html` or the raw `src` directory.
 
 The build emits `dist/index.html` and `dist/connect.html`. Cloudflare Pages automatically serves the latter at `/connect`; no separate project, subdomain, DNS record, or custom rewrite is needed with the default Pages setup. This is Cloudflare's documented [HTML route matching](https://developers.cloudflare.com/pages/configuration/serving-pages/). Build settings are documented [here](https://developers.cloudflare.com/pages/configuration/build-configuration/).
 
 The QR click target is the root-relative path `/connect`. On localhost it opens the local contact page; on `https://vhades.dpdns.org` it opens `https://vhades.dpdns.org/connect`. The QR image itself always encodes that live URL, including when scanned from a local preview.
 
-After deployment, open `/connect` directly and refresh it, check Save Contact and Resume downloads, and check that the fourth dot scrolls to the V/QR section while the URL stays on `/`. Custom Pages Functions or redirect rules that intercept `/connect` must allow the contact asset through. This repository does not contain the account's dashboard settings, so those settings have not been inspected.
+After deployment, open `/connect` directly and refresh it, check the phone and email links and resume download, and check that the fourth dot scrolls to the V/QR section while the URL stays on `/`. Custom Pages Functions or redirect rules that intercept `/connect` must allow the contact asset through. This repository does not contain the account's dashboard settings, so those settings have not been inspected.
 
 ---
 
@@ -159,18 +157,18 @@ A full-viewport closing section with a rotating gold voxel V. CONNECT rearranges
 
 ### Standalone contact page
 
-`/connect` is a separate, mobile-first HTML page with no portfolio scripts, intro, audio, or WebGL. It contains the identity and six immediate actions:
+`/connect` is a standalone business card with a fine gold border on every screen size. Laptops use a wide card with identity and contact details in two columns; phones use a portrait card with spacing adjusted for shorter displays. Its styles are embedded in the document to prevent an unstyled flash. It has no portfolio scripts, intro, audio, or WebGL, and contains six actions:
 
 | Action | Destination |
 |---|---|
-| Save Contact | vCard with name, email, portfolio, LinkedIn, and GitHub |
+| Phone | Tap to call +91 95832 21281 |
 | LinkedIn | Existing LinkedIn profile, in a new tab |
 | GitHub | Existing GitHub profile, in a new tab |
 | Resume | Download the existing PDF |
 | Portfolio | Main homepage |
 | Email | Existing mailto address |
 
-Vite builds both `index.html` and `connect.html`. Both the development server and production preview resolve `/connect`; Cloudflare deployment is covered above. Contact-card details are in `public/assets/vedansh-somani.vcf`; the resume remains `public/assets/resume.pdf`. Visitors can open the downloaded `.vcf` in a contacts app to save the name, email, portfolio, and social links. Social links are also stored in the card's notes for apps that do not display social-profile fields.
+Vite builds both `index.html` and `connect.html`. Both the development server and production preview resolve `/connect`; Cloudflare deployment is covered above. Contact details are edited directly in `connect.html`; the resume remains `public/assets/resume.pdf`. The contact-file download has been removed.
 
 ---
 

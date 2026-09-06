@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0D0D0D" />
-    <meta name="description" content="Vedansh Somani · Robotics & AI. Save my contact or find my LinkedIn, GitHub, resume, portfolio, and email." />
+    <meta name="description" content="Vedansh Somani · Robotics & AI. Get in touch, explore my work, or download my resume." />
     <meta property="og:title" content="Vedansh Somani / Connect" />
     <meta property="og:description" content="Robotics & AI. Contact, profiles, and resume." />
     <meta property="og:type" content="profile" />
@@ -15,34 +15,206 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./connect/connect.css" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0d0d0d;
+        --gold: #c9a84c;
+        --text: #f0ede6;
+        --muted: #aaa69c;
+        --line: #353229;
+        font-family: Manrope, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-width: 280px;
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+      }
+      .contact-card {
+        width: min(100%, 960px);
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        gap: 44px;
+        padding: clamp(28px, 4.5vw, 52px);
+        border: 1px solid #6c5c32;
+        background: #111110;
+      }
+      .card-heading, .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .contact-mark {
+        color: var(--gold);
+        font-family: Cinzel, Georgia, serif;
+        font-size: 32px;
+        line-height: 1;
+      }
+      .card-heading p, .contact-identity p, .contact-label {
+        margin: 0;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .card-body {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        align-items: center;
+        gap: clamp(28px, 5vw, 64px);
+      }
+      .contact-identity { padding-block: 16px; }
+      h1 {
+        margin: 0;
+        font-family: Cinzel, Georgia, serif;
+        font-size: clamp(32px, 4.2vw, 48px);
+        font-weight: 500;
+        letter-spacing: -0.04em;
+        line-height: 1.2;
+      }
+      h1 span { display: block; }
+      .contact-identity p {
+        margin-top: 20px;
+        color: var(--gold);
+        font-size: 11px;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+        touch-action: manipulation;
+        transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+      }
+      a:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+      .contact-actions {
+        min-width: 0;
+        border-left: 1px solid var(--line);
+        padding-left: clamp(24px, 3.5vw, 44px);
+      }
+      .contact-email {
+        display: block;
+        min-height: 44px;
+        padding: 12px 0 18px;
+        font-size: 12px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+      }
+      .contact-phone {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        margin-top: 8px;
+        font-size: 15px;
+        letter-spacing: 0.02em;
+      }
+      .contact-phone + .contact-email { padding-top: 0; }
+      .social-links {
+        display: flex;
+        gap: 24px;
+        border-top: 1px solid var(--line);
+      }
+      .social-links a {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-height: 52px;
+        font-size: 12px;
+      }
+      a span[aria-hidden] { color: var(--gold); }
+      a:hover { color: var(--gold); }
+      .resume-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 48px;
+        margin-top: 12px;
+        padding: 12px 16px;
+        border: 1px solid #6c5c32;
+        color: var(--gold);
+        font-size: 11px;
+        letter-spacing: 0.04em;
+      }
+      .resume-link:hover { background: #1d1b14; border-color: var(--gold); }
+      .card-footer {
+        border-top: 1px solid var(--line);
+        padding-top: 16px;
+        color: var(--muted);
+        font-size: 10px;
+        letter-spacing: 0.03em;
+      }
+      .card-footer a { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; }
+
+      @media (max-width: 640px) {
+        body {
+          padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+        }
+        .contact-card {
+          width: min(100%, 420px);
+          min-height: min(680px, calc(100svh - 32px));
+          padding: clamp(20px, 6vw, 32px);
+          gap: 32px;
+        }
+        .card-body { grid-template-columns: 1fr; gap: 32px; }
+        .contact-identity { padding: 0; }
+        h1 { font-size: clamp(32px, 9.5vw, 42px); }
+        .contact-identity p { margin-top: 16px; }
+        .contact-actions { border-left: 0; padding-left: 0; }
+        .contact-email { font-size: 12px; }
+        .card-footer { font-size: 9px; gap: 8px; padding-top: 10px; }
+      }
+      @media (max-width: 640px) and (max-height: 700px) {
+        .contact-card { gap: 20px; }
+        .card-body { gap: 24px; }
+        .contact-mark { font-size: 28px; }
+        h1 { font-size: 32px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        a { transition: none; }
+      }
+    </style>
   </head>
   <body>
     <main class="contact-card" aria-labelledby="contact-name">
-      <header class="contact-identity">
+      <header class="card-heading">
         <div class="contact-mark" aria-hidden="true">V</div>
-        <h1 id="contact-name">Vedansh Somani</h1>
-        <p>Robotics &amp; AI</p>
+        <p>Let's connect</p>
       </header>
 
-      <a class="save-contact" href="/assets/vedansh-somani.vcf" download="Vedansh_Somani.vcf">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5" /></svg>
-        <span>SAVE CONTACT</span>
-        <span class="contact-format" aria-hidden="true">.vcf</span>
-      </a>
-
-      <div class="contact-actions">
-        <a href="https://www.linkedin.com/in/vedansh-somani/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
-        <a href="https://github.com/sudoVed" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-        <a href="/assets/resume.pdf" download="Vedansh_Somani_Resume.pdf">Resume <span class="contact-format" aria-hidden="true">PDF ↓</span></a>
-        <a href="/">Portfolio <span aria-hidden="true">↗</span></a>
-        <a class="contact-email" href="mailto:vedansh.somani.study@gmail.com">
-          <span>Email <small>vedansh.somani.study@gmail.com</small></span>
-          <span aria-hidden="true">↗</span>
-        </a>
+      <div class="card-body">
+        <div class="contact-identity">
+          <h1 id="contact-name"><span>Vedansh</span> <span>Somani</span></h1>
+          <p>Robotics &amp; AI</p>
+        </div>
+        <div class="contact-actions">
+          <p class="contact-label">Get in touch</p>
+          <a class="contact-phone" href="tel:+919583221281">+91 95832 21281</a>
+          <a class="contact-email" href="mailto:vedansh.somani.study@gmail.com">vedansh.somani.study@gmail.com</a>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/vedansh-somani/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/sudoVed" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+          <a class="resume-link" href="/assets/resume.pdf" download="Vedansh_Somani_Resume.pdf">Download resume <span aria-hidden="true">PDF ↓</span></a>
+        </div>
       </div>
 
-      <footer>vhades.dpdns.org</footer>
+      <footer class="card-footer">
+        <a href="/">Explore portfolio <span aria-hidden="true">↗</span></a>
+        <span>vhades.dpdns.org</span>
+      </footer>
     </main>
   </body>
 </html>
