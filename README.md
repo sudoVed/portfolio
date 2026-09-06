@@ -29,12 +29,42 @@ npm run preview
 | `public/assets/vedansh-somani.vcf` | Downloadable contact card |
 | `public/assets/resume.pdf` | Resume downloaded from the contact page |
 | `dist/` | Generated deployment output, excluded from Git |
+| `wrangler.jsonc` | Cloudflare Worker `portfolio`, serving static files from `dist` |
 
 `src/components/voxel-connect/` is source code for one portfolio section, not a website route. It is bundled by Vite; visitors do not navigate to that directory. Implementation notes and checks are in [its README](src/components/voxel-connect/README.md).
 
 ## Deploy to Cloudflare
 
-### Cloudflare Pages
+### Cloudflare Workers (current hosting)
+
+The repository includes `wrangler.jsonc` for the existing Worker named `portfolio`. It publishes `dist` as static assets. Wrangler is pinned in `package-lock.json` so deployments use the checked version.
+
+In **Workers & Pages → portfolio → Settings → Builds**, use:
+
+| Setting | Value |
+|---|---|
+| Root directory | Repository root |
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` (or `npm run deploy`) |
+| Production branch | The branch connected to this Worker |
+
+Commit and push the changes, including `wrangler.jsonc` and `package-lock.json`, to that branch. The next build deploys the portfolio and contact page together. There is no separate `/connect` upload or DNS record to add. The existing custom domain must remain attached to this Worker.
+
+The build emits `dist/index.html` and `dist/connect.html`. The configured `auto-trailing-slash` HTML handling serves `connect.html` at `/connect`. See [Workers HTML handling](https://developers.cloudflare.com/workers/static-assets/routing/advanced/html-handling/).
+
+If the build succeeds but deploy reports `Error parsing file: .../vite.config.js`, check that `wrangler.jsonc` is committed at the configured root. Without it, Wrangler enters [automatic framework configuration](https://developers.cloudflare.com/workers/framework-guides/automatic-configuration/); this site already builds with Vite and only needs its output uploaded.
+
+To validate the deployment package locally without uploading it:
+
+```sh
+npm run build
+npx wrangler deploy --dry-run
+npx wrangler dev --local
+```
+
+Open the local address printed by Wrangler and check `/`, `/connect`, and both downloads. For a manual production deployment after building, run `npm run deploy` using a Cloudflare login authorized for the existing Worker.
+
+### Cloudflare Pages (alternative hosting)
 
 Use the existing Pages project connected to this repository:
 
@@ -52,10 +82,6 @@ The build emits `dist/index.html` and `dist/connect.html`. Cloudflare Pages auto
 The QR click target is the root-relative path `/connect`. On localhost it opens the local contact page; on `https://vhades.dpdns.org` it opens `https://vhades.dpdns.org/connect`. The QR image itself always encodes that live URL, including when scanned from a local preview.
 
 After deployment, open `/connect` directly and refresh it, check Save Contact and Resume downloads, and check that the fourth dot scrolls to the V/QR section while the URL stays on `/`. Custom Pages Functions or redirect rules that intercept `/connect` must allow the contact asset through. This repository does not contain the account's dashboard settings, so those settings have not been inspected.
-
-### Cloudflare Workers with static assets
-
-If the existing project is a Worker rather than Pages, deploy `dist` as its static asset directory and retain the default `assets.html_handling: "auto-trailing-slash"`, which serves `connect.html` at `/connect`. A custom Worker handling requests before static assets must pass `/connect` through to the asset binding. See [Workers HTML handling](https://developers.cloudflare.com/workers/static-assets/routing/advanced/html-handling/). No Worker configuration is added here because the existing hosting setup is managed outside this repo.
 
 ---
 
@@ -150,9 +176,11 @@ Vite builds both `index.html` and `connect.html`. Both the development server an
 
 ## Sound Design
 
-All audio respects browser autoplay policy — sounds only play after the first user interaction. All audio files are preloaded into the browser cache on page load via `Audio()` objects. The glass video is preloaded by mounting a hidden `<video preload="auto">` element at the very start of the intro, giving the browser the full duration of the die-roll sequence (~5 s) to buffer it before it is needed.
+All audio respects browser autoplay policy — sounds only play after the first user interaction. Audio bytes are prefetched with `fetch()` on page load and decoded through Web Audio when needed. The glass video is preloaded by mounting a hidden `<video preload="auto">` element at the very start of the intro, giving the browser the full duration of the die-roll sequence (~5 s) to buffer it before it is needed.
 
-The background track pauses automatically when the tab is hidden and resumes when the tab regains focus.
+The shared audio context pauses when the tab is hidden **or the browser window loses focus** (including switching to another app). It resumes from the same track position only when the page is visible and focused. Loading audio cannot wake an unfocused page; new sound effects are discarded while unfocused. Stopping a pending background start cancels it, preventing an old load from starting another track.
+
+Run `npm run test:audio` for the focus, visibility, and asynchronous-loading regression checks. To check in a browser, start the music, switch tabs, switch to another application while the page remains visible, and return. Music should pause in both cases and resume at the same position.
 
 | Moment | Sound |
 |---|---|

@@ -10,10 +10,22 @@ import woosh2Src from "../assets/woosh2.mp3";
 export { hoverSrc, failSrc, successSrc, glassSrc };
 
 let ctx = null;
+let pageFocused = document.hasFocus();
+
+function isAudioActive() {
+  return pageFocused && !document.hidden;
+}
+
+function syncAudioFocus() {
+  if (!ctx) return;
+  // Suspend the audio clock too, so the track continues from the same position.
+  if (isAudioActive()) ctx.resume();
+  else ctx.suspend();
+}
 
 function getCtx() {
   if (!ctx) ctx = new AudioContext();
-  if (ctx.state === "suspended") ctx.resume();
+  syncAudioFocus();
   return ctx;
 }
 
@@ -26,7 +38,7 @@ const rawCache = {};
 async function loadBuffer(src) {
   if (buffers[src]) return buffers[src];
   const ab = rawCache[src] ? rawCache[src] : await fetch(src).then(r => r.arrayBuffer());
-  buffers[src] = await getCtx().decodeAudioData(ab);
+  buffers[src] = await getCtx().decodeAudioData(ab.slice(0));
   return buffers[src];
 }
 
@@ -46,7 +58,10 @@ function playBuffer(buffer, volume = 1, startOffset = 0, loop = false) {
 }
 
 export async function playOnce(src, volume = 1, startTime = 0) {
+  if (!isAudioActive()) return;
+  getCtx();
   const buf = await loadBuffer(src);
+  if (!isAudioActive()) return;
   playBuffer(buf, volume, startTime);
 }
 
@@ -57,34 +72,35 @@ export function playWall() { playOnce(wallSrc, 0.5); }
 let bgSource = null;
 let bgGain = null;
 let bgLoading = false;
+let bgRequest = 0;
 
 export async function startBg() {
   if (bgSource || bgLoading) return;
   bgLoading = true;
-  const buf = await loadBuffer(bgSrc);
-  bgLoading = false;
-  if (bgSource) return; // stopAllAudio was called while loading
-  const ac = getCtx();
-  bgGain = ac.createGain();
-  bgGain.gain.value = 0.18;
-  bgGain.connect(ac.destination);
-  bgSource = ac.createBufferSource();
-  bgSource.buffer = buf;
-  bgSource.loop = true;
-  bgSource.connect(bgGain);
-  bgSource.start(0);
+  const request = ++bgRequest;
+  getCtx();
+  try {
+    const buf = await loadBuffer(bgSrc);
+    if (request !== bgRequest) return;
+    const ac = getCtx();
+    bgGain = ac.createGain();
+    bgGain.gain.value = 0.18;
+    bgGain.connect(ac.destination);
+    bgSource = ac.createBufferSource();
+    bgSource.buffer = buf;
+    bgSource.loop = true;
+    bgSource.connect(bgGain);
+    bgSource.start(0);
+  } finally {
+    if (request === bgRequest) bgLoading = false;
+  }
 }
 
 const FADE = 0.04;
 
-function rampBg(to) {
-  if (!bgGain || !ctx) return;
-  bgGain.gain.cancelScheduledValues(0);
-  bgGain.gain.setValueAtTime(bgGain.gain.value, ctx.currentTime);
-  bgGain.gain.linearRampToValueAtTime(to, ctx.currentTime + FADE);
-}
-
 export function stopAllAudio() {
+  ++bgRequest;
+  bgLoading = false;
   if (!bgGain || !bgSource || !ctx) { bgSource = null; bgGain = null; return; }
   const src = bgSource;
   const gain = bgGain;
@@ -96,13 +112,14 @@ export function stopAllAudio() {
   setTimeout(() => { try { src.stop(); } catch {} gain.disconnect(); }, FADE * 1000 + 10);
 }
 
-document.addEventListener("visibilitychange", () => {
-  if (!ctx || !bgGain) return;
-  if (document.hidden) {
-    rampBg(0);
-  } else {
-    rampBg(0.18);
-  }
+document.addEventListener("visibilitychange", syncAudioFocus);
+window.addEventListener("blur", () => {
+  pageFocused = false;
+  syncAudioFocus();
+});
+window.addEventListener("focus", () => {
+  pageFocused = true;
+  syncAudioFocus();
 });
 
 // Pre-fetch raw bytes at page load to prime HTTP cache (no AudioContext needed)
